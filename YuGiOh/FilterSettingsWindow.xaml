@@ -1,0 +1,298 @@
+﻿<Window x:Class="YuGiOh_DeckBuilder.FilterSettingsWindow"
+        Title="SettingsWindow" Height="720" Width="1280"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        xmlns:fsw="clr-namespace:YuGiOh_DeckBuilder"
+        xmlns:ygo="clr-namespace:YuGiOh_DeckBuilder.YuGiOh">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width=".5*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".05*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button Content="Clear" Width="100" HorizontalAlignment="Left" Click="Button_Clear_Click" />
+                <ComboBox x:Name="ComboBox_DateStart" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDates)}" SelectedIndex="0" SelectionChanged="ComboBox_DateStart_OnSelectionChanged" />
+                <ComboBox x:Name="ComboBox_DateEnd" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDates)}" SelectedIndex="0" SelectionChanged="ComboBox_DateEnd_OnSelectionChanged" />
+            </StackPanel>
+
+            <ListView x:Name="ListView_Packs" ItemsSource="{Binding Path=(ygo:FilterSettings.Packs), IsAsync=True}" Grid.Row="1"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SizeChanged="ListView_SizeChanged">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Column="0">
+            <StackPanel x:Name="StackPanel_CardFilter">
+                <StackPanel.Resources>
+                    <Style x:Key="WrapPanel" TargetType="{x:Type WrapPanel}">
+                        <Setter Property="Margin" Value="10,5,10,5" />
+                    </Style>
+                    <Style x:Key="Button" TargetType="{x:Type Button}">
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="MaxHeight" Value="25" />
+                    </Style>
+                    <Style x:Key="ToggleButton" TargetType="{x:Type ToggleButton}">
+                        <Setter Property="Margin" Value="5,2.5,5,2.5" />
+                        <Setter Property="MinWidth" Value="100" />
+                        <Setter Property="MinHeight" Value="25" />
+                        <Setter Property="Grid.Column" Value="0" />
+                    </Style>
+                </StackPanel.Resources>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Card Type:" Style="{StaticResource Button}" Click="Button_CardType_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="Monster" Style="{StaticResource ToggleButton}" IsChecked="{Binding CardTypes[Monster]}" />
+                        <ToggleButton Content="Spell" Style="{StaticResource ToggleButton}" IsChecked="{Binding CardTypes[Spell]}" />
+                        <ToggleButton Content="Trap" Style="{StaticResource ToggleButton}" IsChecked="{Binding CardTypes[Trap]}" />
+                    </WrapPanel>
+                </Grid>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Monster Type:" Style="{StaticResource Button}" Click="Button_MonsterType_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="Normal" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Normal]}" />
+                        <ToggleButton Content="Effect" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Effect]}" />
+                        <ToggleButton Content="Fusion" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Fusion]}" />
+                        <ToggleButton Content="Ritual" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Ritual]}" />
+                        <ToggleButton Content="Synchro" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Synchro]}" />
+                        <ToggleButton Content="Xyz" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Xyz]}" />
+                        <ToggleButton Content="Pendulum" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Pendulum]}" />
+                        <ToggleButton Content="Link" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Link]}" />
+                    </WrapPanel>
+                </Grid>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Spell/Trap Type:" Style="{StaticResource Button}" Click="Button_SpellTrap_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="Normal" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[Normal]}" />
+                        <ToggleButton Content="Continuous" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[Continuous]}" />
+                        <ToggleButton Content="Counter" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[Counter]}" />
+                        <ToggleButton Content="Equip" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[Equip]}" />
+                        <ToggleButton Content="Field" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[Field]}" />
+                        <ToggleButton Content="Quick-Play" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[QuickPlay]}" />
+                        <ToggleButton Content="Ritual" Style="{StaticResource ToggleButton}" IsChecked="{Binding PropertyTypes[Ritual]}" />
+                    </WrapPanel>
+                </Grid>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Level/Rank:" Style="{StaticResource Button}" Click="Button_LevelRank_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1">
+                        <ToggleButton Content="0" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[0]}" />
+                        <ToggleButton Content="1" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[1]}" />
+                        <ToggleButton Content="2" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[2]}" />
+                        <ToggleButton Content="3" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[3]}" />
+                        <ToggleButton Content="4" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[4]}" />
+                        <ToggleButton Content="5" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[5]}" />
+                        <ToggleButton Content="6" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[6]}" />
+                        <ToggleButton Content="7" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[7]}" />
+                        <ToggleButton Content="8" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[8]}" />
+                        <ToggleButton Content="9" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[9]}" />
+                        <ToggleButton Content="10" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[10]}" />
+                        <ToggleButton Content="11" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[11]}" />
+                        <ToggleButton Content="12" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[12]}" />
+                        <ToggleButton Content="13" Style="{StaticResource ToggleButton}" IsChecked="{Binding Levels[13]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Attribute:" Style="{StaticResource Button}" Click="Button_Attribute_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="DARK" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[DARK]}" />
+                        <ToggleButton Content="DIVINE" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[DIVINE]}" />
+                        <ToggleButton Content="EARTH" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[EARTH]}" />
+                        <ToggleButton Content="FIRE" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[FIRE]}" />
+                        <ToggleButton Content="LIGHT" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[LIGHT]}" />
+                        <ToggleButton Content="WATER" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[WATER]}" />
+                        <ToggleButton Content="WIND" Style="{StaticResource ToggleButton}" IsChecked="{Binding Attributes[WIND]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Ability:" Style="{StaticResource Button}" Click="Button_Ability_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="Flip" Style="{StaticResource ToggleButton}" IsChecked="{Binding Abilities[Flip]}" />
+                        <ToggleButton Content="Gemini" Style="{StaticResource ToggleButton}" IsChecked="{Binding Abilities[Gemini]}" />
+                        <ToggleButton Content="Spirit" Style="{StaticResource ToggleButton}" IsChecked="{Binding Abilities[Spirit]}" />
+                        <ToggleButton Content="Toon" Style="{StaticResource ToggleButton}" IsChecked="{Binding Abilities[Toon]}" />
+                        <ToggleButton Content="Tuner" Style="{StaticResource ToggleButton}" IsChecked="{Binding Abilities[Tuner]}" />
+                        <ToggleButton Content="Union" Style="{StaticResource ToggleButton}" IsChecked="{Binding Abilities[Union]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Type:" Style="{StaticResource Button}" Click="Button_Type_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="Aqua" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Aqua]}" />
+                        <ToggleButton Content="Beast" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Beast]}" />
+                        <ToggleButton Content="Beast-Warrior" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[BeastWarrior]}" />
+                        <ToggleButton Content="Creator-God" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[CreatorGod]}" />
+                        <ToggleButton Content="Cyberse" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Cyberse]}" />
+                        <ToggleButton Content="Dinosaur" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Dinosaur]}" />
+                        <ToggleButton Content="Divine-Beast" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[DivineBeast]}" />
+                        <ToggleButton Content="Dragon" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Dragon]}" />
+                        <ToggleButton Content="Fairy" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Fairy]}" />
+                        <ToggleButton Content="Fiend" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Fiend]}" />
+                        <ToggleButton Content="Fish" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Fish]}" />
+                        <ToggleButton Content="Gemini" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Gemini]}" />
+                        <ToggleButton Content="Insect" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Insect]}" />
+                        <ToggleButton Content="Machine" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Machine]}" />
+                        <ToggleButton Content="Plant" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Plant]}" />
+                        <ToggleButton Content="Psychic" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Psychic]}" />
+                        <ToggleButton Content="Pyro" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Pyro]}" />
+                        <ToggleButton Content="Reptile" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Reptile]}" />
+                        <ToggleButton Content="Rock" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Rock]}" />
+                        <ToggleButton Content="Sea-Serpent" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[SeaSerpent]}" />
+                        <ToggleButton Content="Spellcaster" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Spellcaster]}" />
+                        <ToggleButton Content="Thunder" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Thunder]}" />
+                        <ToggleButton Content="Warrior" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Warrior]}" />
+                        <ToggleButton Content="Winged-Beast" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[WingedBeast]}" />
+                        <ToggleButton Content="Wyrm" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Wyrm]}" />
+                        <ToggleButton Content="Zombie" Style="{StaticResource ToggleButton}" IsChecked="{Binding Types[Zombie]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Pendulum Scale:" Style="{StaticResource Button}" Click="Button_PendulumScale_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1">
+                        <ToggleButton Content="0" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[0]}" />
+                        <ToggleButton Content="1" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[1]}" />
+                        <ToggleButton Content="2" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[2]}" />
+                        <ToggleButton Content="3" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[3]}" />
+                        <ToggleButton Content="4" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[4]}" />
+                        <ToggleButton Content="5" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[5]}" />
+                        <ToggleButton Content="6" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[6]}" />
+                        <ToggleButton Content="7" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[7]}" />
+                        <ToggleButton Content="8" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[8]}" />
+                        <ToggleButton Content="9" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[9]}" />
+                        <ToggleButton Content="10" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[10]}" />
+                        <ToggleButton Content="11" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[11]}" />
+                        <ToggleButton Content="12" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[12]}" />
+                        <ToggleButton Content="13" Style="{StaticResource ToggleButton}" IsChecked="{Binding PendulumScales[13]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Link Arrow:" Style="{StaticResource Button}" Click="Button_LinkArrow_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1">
+                        <ToggleButton Content="Top-Left" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[TopLeft]}" />
+                        <ToggleButton Content="Top" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[Top]}" />
+                        <ToggleButton Content="Top-Right" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[TopRight]}" />
+                        <ToggleButton Content="Left" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[Left]}" />
+                        <ToggleButton Content="Right" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[Right]}" />
+                        <ToggleButton Content="Bottom-Left" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[BottomLeft]}" />
+                        <ToggleButton Content="Bottom" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[Bottom]}" />
+                        <ToggleButton Content="Bottom-Right" Style="{StaticResource ToggleButton}" IsChecked="{Binding LinkArrows[BottomRight]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Rarity:" Style="{StaticResource Button}" Click="Button_Rarity_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="N" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[N]}" />
+                        <ToggleButton Content="C" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[C]}" />
+                        <ToggleButton Content="NR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[NR]}" />
+                        <ToggleButton Content="SP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SP]}" />
+                        <ToggleButton Content="SSP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SSP]}" />
+                        <ToggleButton Content="R" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[R]}" />
+                        <ToggleButton Content="SR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SR]}" />
+                        <ToggleButton Content="HFR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HFR]}" />
+                        <ToggleButton Content="UR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UR]}" />
+                        <ToggleButton Content="UtR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UtR]}" />
+                        <ToggleButton Content="ScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScR]}" />
+                        <ToggleButton Content="UScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UScR]}" />
+                        <ToggleButton Content="ScUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScUR]}" />
+                        <ToggleButton Content="PScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PScR]}" />
+                        <ToggleButton Content="HGR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HGR]}" />
+                        <ToggleButton Content="GR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GR]}" />
+                        <ToggleButton Content="PR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PR]}" />
+                        <ToggleButton Content="NPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[NPR]}" />
+                        <ToggleButton Content="PC" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PC]}" />
+                        <ToggleButton Content="SPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SPR]}" />
+                        <ToggleButton Content="UPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UPR]}" />
+                        <ToggleButton Content="DNPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DNPR]}" />
+                        <ToggleButton Content="DPC" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DPC]}" />
+                        <ToggleButton Content="DRPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DRPR]}" />
+                        <ToggleButton Content="DSPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DSPR]}" />
+                        <ToggleButton Content="DUPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DUPR]}" />
+                        <ToggleButton Content="DScPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DScPR]}" />
+                        <ToggleButton Content="GUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GUR]}" />
+                        <ToggleButton Content="STR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[STR]}" />
+                    </WrapPanel>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Status:" Style="{StaticResource Button}" Click="Button_Status_Click" />
+                    <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
+                        <ToggleButton Content="Unlimited" Style="{StaticResource ToggleButton}" IsChecked="{Binding Statuses[Unlimited]}" />
+                        <ToggleButton Content="SemiLimited" Style="{StaticResource ToggleButton}" IsChecked="{Binding Statuses[SemiLimited]}" />
+                        <ToggleButton Content="Limited" Style="{StaticResource ToggleButton}" IsChecked="{Binding Statuses[Limited]}" />
+                        <ToggleButton Content="Forbidden" Style="{StaticResource ToggleButton}" IsChecked="{Binding Statuses[Forbidden]}" />
+                        <ToggleButton Content="Illegal" Style="{StaticResource ToggleButton}" IsChecked="{Binding Statuses[Illegal]}" />
+                    </WrapPanel>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

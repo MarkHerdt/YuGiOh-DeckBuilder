@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>YuGiOh_DeckBuilder</RootNamespace>
+    <Title>YuGiOh Deck Builder</Title>
+    <Authors>Mark Herdt</Authors>
+    <Company>Mark Herdt</Company>
+    <Product>YuGiOh Deck Builder</Product>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Description>Deck builder tool for YuGiOh</Description>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta1" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.7.22375.6" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="YuGiOh.Tests" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="YuGiOh\Data\Cards" />
+    <Folder Include="YuGiOh\Data\Export" />
+    <Folder Include="YuGiOh\Data\Localization" />
+    <Folder Include="YuGiOh\Data\Packs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MainWindow.Data.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MainWindow.Methods.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="YuGiOh\Data\Cards\">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="YuGiOh\Data\Export\">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="YuGiOh\Data\Images\">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="YuGiOh\Data\Localization\">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="YuGiOh\Data\Packs\">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="YuGiOh\Data\Logging\KnownErrors.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="YuGiOh\Data\Images\0.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

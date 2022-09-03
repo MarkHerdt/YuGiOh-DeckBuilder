@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Update="Fixture.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\YuGiOh\YuGiOh.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Octokit" Version="2.0.1" />
+    </ItemGroup>
+
+</Project>
