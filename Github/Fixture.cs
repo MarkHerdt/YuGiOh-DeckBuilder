@@ -11,7 +11,7 @@ internal static class Fixture
     /// Id of the repository on github <br/>
     /// <i>Search for: <b>octolytics-dimension-repository_id</b> <br/> in page source code</i>
     /// </summary>
-    private const uint repositoryId = 531676282;
+    private const uint repositoryId = 532227886;
     /// <summary>
     /// Name + file extension of the .txt file that holds the github access token
     /// </summary>
