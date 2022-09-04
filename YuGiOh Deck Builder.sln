@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YuGiOh.Tests", "YuGiOh.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Github", "Github\Github.csproj", "{89AE94F7-98FC-4B17-BAAB-E221FC7DA720}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{983363B4-D189-48A0-9E7E-F44674CC29DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{89AE94F7-98FC-4B17-BAAB-E221FC7DA720}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89AE94F7-98FC-4B17-BAAB-E221FC7DA720}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89AE94F7-98FC-4B17-BAAB-E221FC7DA720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{983363B4-D189-48A0-9E7E-F44674CC29DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{983363B4-D189-48A0-9E7E-F44674CC29DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{983363B4-D189-48A0-9E7E-F44674CC29DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{983363B4-D189-48A0-9E7E-F44674CC29DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

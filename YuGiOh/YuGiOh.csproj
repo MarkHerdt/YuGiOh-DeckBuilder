@@ -13,6 +13,14 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Description>Deck builder tool for YuGiOh</Description>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageId>YuGiOh_DeckBuilder</PackageId>
+    <PackageProjectUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder/blob/main/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <Optimize>true</Optimize>
   </PropertyGroup>
   
   <ItemGroup>
@@ -58,6 +66,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="YuGiOh\Data\Logging\KnownErrors.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Last-Update.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

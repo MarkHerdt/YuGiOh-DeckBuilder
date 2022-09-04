@@ -1,9 +1,15 @@
 ﻿using System.IO.Compression;
+using System.Text;
 using Octokit;
 using Octokit.Internal;
+using YuGiOh_DeckBuilder;
+using YuGiOh_DeckBuilder.Extensions;
 
 namespace Github;
 
+/// <summary>
+/// <see cref="Fixture"/> for <see cref="Github"/>
+/// </summary>
 internal static class Fixture
 {
     #region Constants
@@ -29,29 +35,33 @@ internal static class Fixture
     /// </summary>
     private const string releaseTag = "YGO-DB";
     /// <summary>
-    /// Name of the Github.cs project
+    /// Name of the Github.csproj project
     /// </summary>
-    private const string githubProject = "Github";
+    private const string github = "Github";
     /// <summary>
-    /// Name of the YuGiOh.cs project
+    /// Name of the YuGiOh.csproj project
     /// </summary>
-    private const string yuGiOhProject = "YuGiOh";
+    private const string yuGiOh = "YuGiOh";
+    /// <summary>
+    /// Name of the Installer.csproj project
+    /// </summary>
+    private const string installer = "Installer";
     /// <summary>
     /// Name of the Debug build folder
     /// </summary>
-    private const string debugFolder = "Debug";
+    internal const string Debug = "Debug";
     /// <summary>
     /// Name of the Release build folder
     /// </summary>
-    private const string releaseFolder = "Release";
+    internal const string Release = "Release";
     /// <summary>
-    /// Name + file extension of the release build .rar file 
+    /// <see cref="App.RarFile"/>
     /// </summary>
-    private const string releaseBuildFile = "YuGiOh-DeckBuilder.rar";
+    private const string rarFile = App.RarFile;
     /// <summary>
-    /// Name + file extension of the last update .txt file
+    /// <see cref="App.LastUpdateFile"/>
     /// </summary>
-    private const string lastUpdateFile = "Last-Update.txt";
+    private const string lastUpdateFile = App.LastUpdateFile;
     /// <summary>
     /// MIME type for .rar files
     /// </summary>
@@ -70,15 +80,20 @@ internal static class Fixture
     /// <summary>
     /// Absolute path to the build folder of this project
     /// </summary>
-    private static readonly string buildFolder = AppDomain.CurrentDomain.BaseDirectory;
+    private static readonly string buildFolder = AppContext.BaseDirectory;
     /// <summary>
     /// Absolute path to the root folder of this solution
     /// </summary>
     private static readonly string rootFolder = Directory.GetParent(buildFolder)!.Parent!.Parent!.Parent!.Parent!.FullName;
     /// <summary>
-    /// Absolute path to the release build .rar file
+    /// Absolute path to the build .rar file
     /// </summary>
-    private static readonly string releaseBuildFilePath = Path.Combine(rootFolder, releaseBuildFile);
+    private static readonly string rarFilePath = Path.Combine(rootFolder, rarFile);
+    
+    /// <summary>
+    /// <see cref="DateTime"/>.<see cref="DateTime.UtcNow"/>
+    /// </summary>
+    private static readonly string currentUtcTime;
     #endregion
 
     #region Constructor
@@ -86,23 +101,33 @@ internal static class Fixture
     {
         var gitHubToken = GetTokenAsync().Result;
         gitHubClient = new GitHubClient(new ProductHeaderValue(name), new InMemoryCredentialStore(new Credentials(gitHubToken, AuthenticationType.Bearer)));
+        
+        currentUtcTime = DateTime.UtcNow.ToString("F");
     }
     #endregion
     
     #region Methods
     /// <summary>
-    /// Creates a .rar file of the last release build
+    /// Creates a .rar file of the last build
     /// </summary>
-    internal static void CreateRarFile()
+    /// <param name="commandLineArgument">Command-line argument for the current process</param>
+    internal static async Task CreateRarFileAsync(string commandLineArgument)
     {
-        var releaseBuildFolderPath = buildFolder.Replace(githubProject, yuGiOhProject).Replace(debugFolder, releaseFolder);
-
-        if (File.Exists(releaseBuildFilePath))
-        {
-            File.Delete(releaseBuildFilePath);
-        }
+        var yuGiOhBuildFolderPath = buildFolder.Replace(github, yuGiOh).Replace(Release, commandLineArgument);
+        var installerBuildFolderPath = buildFolder.Replace(github, installer).Replace(Release, commandLineArgument);
         
-        ZipFile.CreateFromDirectory(releaseBuildFolderPath, releaseBuildFilePath);
+        await CreateLastUpdateFile(yuGiOhBuildFolderPath);
+        CopyInstaller(installerBuildFolderPath, Path.Combine(yuGiOhBuildFolderPath, yuGiOh, installer));
+        
+        if (commandLineArgument == Release) // The debug build has all downloaded data (multiple GB)
+        {
+            if (File.Exists(rarFilePath))
+            {
+                File.Delete(rarFilePath);
+            }
+            
+            ZipFile.CreateFromDirectory(yuGiOhBuildFolderPath, rarFilePath, CompressionLevel.SmallestSize, false, Encoding.UTF8);
+        }
     }
 
     /// <summary>
@@ -138,10 +163,10 @@ internal static class Fixture
     /// </summary>
     internal static async Task UploadLastReleaseBuildAsync()
     {
-        await using var releaseBuildFileStream = File.OpenRead(releaseBuildFilePath);
+        await using var releaseBuildFileStream = File.OpenRead(rarFilePath);
         var releaseAssetUpload = new ReleaseAssetUpload
         {
-            FileName = releaseBuildFile,
+            FileName = rarFile,
             ContentType = mimeTypeRar,
             RawData = releaseBuildFileStream
         };
@@ -154,11 +179,9 @@ internal static class Fixture
     /// </summary>
     internal static async Task UploadLastUpdateInfoAsync()
     {
-        var timeStamp = DateTime.UtcNow.ToString("g");
-        
         await using var memoryStream = new MemoryStream();
         await using var streamWriter = new StreamWriter(memoryStream);
-        await streamWriter.WriteAsync(timeStamp);
+        await streamWriter.WriteAsync(currentUtcTime);
         await streamWriter.FlushAsync();
         
         memoryStream.Seek(0, SeekOrigin.Begin);
@@ -181,6 +204,36 @@ internal static class Fixture
     {
         var release = await gitHubClient.Repository.Release.Get(repositoryId, releaseTag);
         await gitHubClient.Repository.Release.UploadAsset(release, releaseAssetUpload);
+    }
+
+    /// <summary>
+    /// Creates a .txt file with <see cref="currentUtcTime"/> at the given folder
+    /// </summary>
+    /// <param name="folderPath">The folder path to create the .txt file at</param>
+    private static async Task CreateLastUpdateFile(string folderPath)
+    {
+        var filePath = Path.Combine(folderPath, lastUpdateFile);
+        await using var fileStream = File.Create(filePath);
+        await using var streamWriter = new StreamWriter(fileStream);
+        await streamWriter.WriteAsync(currentUtcTime);
+    }
+
+    /// <summary>
+    /// Copies the Installer build to the YuGiOh release build folder
+    /// </summary>
+    /// <param name="installerBuildFolderPath">Folder path to the installer build</param>
+    /// <param name="yuGiOhInstallerFolder">Folder path to the installer folder, in the YuGiOh release build</param>
+    private static void CopyInstaller(string installerBuildFolderPath, string yuGiOhInstallerFolder)
+    {
+        if (Directory.Exists(yuGiOhInstallerFolder))
+        {
+            Directory.Delete(yuGiOhInstallerFolder, true);
+        }
+        
+        var sourceDirectory = new DirectoryInfo(installerBuildFolderPath);
+        var targetDirectory = new DirectoryInfo(yuGiOhInstallerFolder);
+        
+        sourceDirectory.DeepCopy(targetDirectory);
     }
     
     /// <summary>

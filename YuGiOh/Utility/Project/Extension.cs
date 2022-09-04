@@ -9,5 +9,6 @@ internal enum Extension
     json,
     csv,
     jpg,
-    ydk
+    ydk,
+    exe
 }

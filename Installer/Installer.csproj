@@ -5,14 +5,14 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Title>YuGiOh DeckBuilder Uploader</Title>
+        <Title>YuGiOh DeckBuilder Installer</Title>
         <Authors>Mark Herdt</Authors>
-        <Description>Uploader for the YuGiOh DeckBuilder</Description>
+        <Description>Installer for the YuGiOh DeckBuilder</Description>
         <PackageProjectUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder/blob/main/LICENSE</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder</RepositoryUrl>
         <Company>Mark Herdt</Company>
-        <Product>YuGiOh Deck Builder Uploader</Product>
+        <Product>YuGiOh Deck Builder Installer</Product>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
@@ -29,14 +29,6 @@
       <Compile Update="Fixture.cs">
         <DependentUpon>Program.cs</DependentUpon>
       </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\YuGiOh\YuGiOh.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Octokit" Version="2.0.1" />
     </ItemGroup>
 
 </Project>

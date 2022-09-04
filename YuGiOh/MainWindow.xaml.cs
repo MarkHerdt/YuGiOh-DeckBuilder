@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using YuGiOh_DeckBuilder.Utility.Project;
+using YuGiOh_DeckBuilder.Web;
 using YuGiOh_DeckBuilder.YuGiOh;
 using YuGiOh_DeckBuilder.YuGiOh.Enums;
 using YuGiOh_DeckBuilder.YuGiOh.Logging;
@@ -14,6 +16,7 @@ namespace YuGiOh_DeckBuilder
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class MainWindow : Window
     {
         #region Constrcutor
@@ -38,7 +41,7 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private async void Button_Download_Click(object sender, RoutedEventArgs routedEventArgs)
+        private async void Button_Download_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             var yuGiOhFandom = new YuGiOhFandom();
 
@@ -63,7 +66,7 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private async void Button_Update_Click(object sender, RoutedEventArgs routedEventArgs)
+        private async void Button_UpdateCards_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             var yuGiOhFandom = new YuGiOhFandom();
 
@@ -88,7 +91,7 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private async void Button_Load_Click(object sender, RoutedEventArgs routedEventArgs)
+        private async void Button_LoadCards_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             // TODO: Call these on program start
             await this.LoadPacks();
@@ -98,11 +101,41 @@ namespace YuGiOh_DeckBuilder
         }
         
         /// <summary>
+        /// Sets the sorting order for <see cref="CardsListView"/>
+        /// </summary>
+        /// <param name="sender"><see cref="object"/> from which this method is called</param>
+        /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
+        private async void Button_UpdateApp_OnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            this.Button_UpdateApp.IsEnabled = false;
+            
+            const string uri = "https://github.com/MarkHerdt/YuGiOh-DeckBuilder/releases/download/YGO-DB/YuGiOh-DeckBuilder.rar";
+            var filePath = Path.Combine(AppContext.BaseDirectory, App.RarFile);
+            
+            await using var download = (await WebClient.DownloadStreamAsync(uri))!;
+            await using var fileStream = File.OpenWrite(filePath);
+            await download.CopyToAsync(fileStream);
+
+            var deckBuilderExePath = Environment.ProcessPath!;
+            var installerFilePath = Structure.BuildPath(Folder.Installer, nameof(Folder.Installer), Extension.exe);
+            using var process = Process.GetCurrentProcess();
+
+            Process.Start(installerFilePath, new []
+            {
+                process.Id.ToString(),    // Id of this process
+                AppContext.BaseDirectory, // Path of the folder to update
+                nameof(YuGiOh),           // Folder name to exclude
+                App.RarFile,              // Name of the file to update the folder with
+                deckBuilderExePath        // Path to the .exe of the DeckBuilder
+            });
+        }
+        
+        /// <summary>
         /// Exports all cards in <see cref="DeckListView"/>
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private void Button_Export_Click(object sender, RoutedEventArgs routedEventArgs)
+        private void Button_Export_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             const string main = "#main\n";
             const string extra = "#extra\n";
@@ -120,7 +153,7 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private void Button_Search_Click(object sender, RoutedEventArgs routedEventArgs)
+        private void Button_Search_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             this.Search(this.TextBox_Search.Text);
         }
@@ -130,7 +163,7 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private void Button_Settings_Click(object sender, RoutedEventArgs routedEventArgs)
+        private void Button_Settings_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             if (this.settingsWindow is not { IsVisible: true })
             {
@@ -159,7 +192,7 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private void Button_SortOrder_Click(object sender, RoutedEventArgs routedEventArgs)
+        private void Button_SortOrder_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             this.currentSortingOrder = !this.currentSortingOrder;
             this.Button_SortingOrder.Content = this.sortingOrder[this.currentSortingOrder].ToString();
@@ -170,16 +203,5 @@ namespace YuGiOh_DeckBuilder
             }
         }
         #endregion
-
-        // https://github.com//MarkHerdt/YuGiOh-DeckBuilder/raw/master/YuGiOh-DeckBuilder.rar
-        private async void Button_Test_OnClick(object sender, RoutedEventArgs e) // https://github.com//MarkHerdt/YuGiOh-DeckBuilder/blob/master/YuGiOh-DeckBuilder.rar?raw=true
-        {
-            // const string uri = "https://github.com/MarkHerdt/YuGiOh-DeckBuilder/raw/master/YuGiOh-DeckBuilder.rar";
-            // const string filePath = @"D:\Downloads\Test.zip";
-            //
-            // await using var download = (await WebClient.DownloadStreamAsync(uri))!;
-            // await using var file = File.OpenWrite(filePath);
-            // await download.CopyToAsync(file);
-        }
     }
 }

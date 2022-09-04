@@ -4,14 +4,27 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
+        <IsPackable>true</IsPackable>
         <RootNamespace>YuGiOh_DeckBuilder_Tests</RootNamespace>
-        <Title>YuGiOh Deck Builder</Title>
+        <Title>YuGiOh Deck Builder Tests</Title>
         <Authors>Mark Herdt</Authors>
-        <Description>Deck builder tool for YuGiOh</Description>
+        <Description>Unit Test for the YuGiOh DeckBuilder</Description>
         <Company>Mark Herdt</Company>
-        <Product>YuGiOh Deck Builder</Product>
+        <Product>YuGiOh Deck Builder Tests</Product>
         <NeutralLanguage>en</NeutralLanguage>
+        <PackageId>YuGiOh_DeckBuilder.Tests</PackageId>
+        <PackageProjectUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder/blob/main/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/MarkHerdt/YuGiOh-DeckBuilder</RepositoryUrl>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <Optimize>true</Optimize>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

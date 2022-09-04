@@ -35,15 +35,15 @@ public static class Structure
 #if DEBUG
         if ((int)folder < 0)
         {
-            directoryPath = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)!.Parent!.Parent!.Parent!.Parent!.FullName;
-            directoryPath = Path.Combine(directoryPath, "YuGiOh.Tests");   
+            directoryPath = Directory.GetParent(AppContext.BaseDirectory)!.Parent!.Parent!.Parent!.Parent!.FullName;
+            directoryPath = Path.Combine(directoryPath, "YuGiOh.Tests");
         }
         else
         {
-            directoryPath = AppDomain.CurrentDomain.BaseDirectory;
+            directoryPath = AppContext.BaseDirectory;
         }
 #else
-        directoryPath = AppDomain.CurrentDomain.BaseDirectory;
+        directoryPath = AppContext.BaseDirectory;
 #endif
         
         var folderPath = Path.Combine(directoryPath, GetFolderPath(folder));
@@ -81,6 +81,7 @@ public static class Structure
     private static string GetFolderPath(Folder folder)
     {
         const string yuGiOh = "YuGiOh";
+        const string temp = "temp";
         
         return folder switch
         {
@@ -92,6 +93,8 @@ public static class Structure
             Folder.Localization => Path.Combine(yuGiOh, nameof(Folder.Data), nameof(Folder.Localization)),
             Folder.Export => Path.Combine(yuGiOh, nameof(Folder.Data), nameof(Folder.Export)),
             Folder.Logging => Path.Combine(yuGiOh, nameof(Folder.Data), nameof(Folder.Logging)),
+            Folder.Installer => Path.Combine(yuGiOh, nameof(Folder.Installer)),
+            Folder.TempInstaller => Path.Combine(temp, yuGiOh, nameof(Folder.Installer)),
             
             Folder.Data_TEST => Path.Combine(nameof(Folder.Data)),
             Folder.Packs_TEST => Path.Combine(nameof(Folder.Data), nameof(Folder.Packs)),

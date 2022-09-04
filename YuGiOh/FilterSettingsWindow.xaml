@@ -26,7 +26,7 @@
                 <ComboBox x:Name="ComboBox_DateEnd" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDates)}" SelectedIndex="0" SelectionChanged="ComboBox_DateEnd_OnSelectionChanged" />
             </StackPanel>
 
-            <ListView x:Name="ListView_Packs" ItemsSource="{Binding Path=(ygo:FilterSettings.Packs), IsAsync=True}" Grid.Row="1"
+            <ListView ItemsSource="{Binding Path=(ygo:FilterSettings.Packs), IsAsync=True}" Grid.Row="1"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SizeChanged="ListView_SizeChanged">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -37,7 +37,7 @@
         </Grid>
 
         <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Column="0">
-            <StackPanel x:Name="StackPanel_CardFilter">
+            <StackPanel>
                 <StackPanel.Resources>
                     <Style x:Key="WrapPanel" TargetType="{x:Type WrapPanel}">
                         <Setter Property="Margin" Value="10,5,10,5" />

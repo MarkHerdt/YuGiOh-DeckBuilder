@@ -5,10 +5,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
 using YuGiOh_DeckBuilder.Extensions;
-using YuGiOh_DeckBuilder.Utility;
 using YuGiOh_DeckBuilder.Utility.Json;
 using YuGiOh_DeckBuilder.Utility.Project;
 using YuGiOh_DeckBuilder.WPF;
@@ -29,9 +29,6 @@ public partial class MainWindow
     /// </summary>
     private void Init()
     {
-        ConsoleAllocator.ShowConsoleWindow();
-        Console.OutputEncoding = Encoding.UTF8; // Must be called after "ConsoleAllocator.ShowConsoleWindow();"
-
         Instance = this;
 
         this.settingsWindow = new FilterSettingsWindow(filterSettings);

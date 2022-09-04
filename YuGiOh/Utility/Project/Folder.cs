@@ -11,33 +11,41 @@ internal enum Folder
     /* Folder in YuGiOh.cs have values > 0 */
     
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/
+    /// /YuGiOh/Data/
     /// </summary>
     Data = 1,
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/Packs/
+    /// /YuGiOh/Data/Packs/
     /// </summary>
     Packs = 2,
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/Cards/
+    /// /YuGiOh/Data/Cards/
     /// </summary>
     Cards = 3,
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/Images/
+    /// /YuGiOh/Data/Images/
     /// </summary>
     Images = 4,
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/Localization/
+    /// /YuGiOh/Data/Localization/
     /// </summary>
     Localization = 5,
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/Export/
+    /// /YuGiOh/Data/Export/
     /// </summary>
     Export = 6,
     /// <summary>
-    /// YuGiOh/YuGiOh/YuGiOh/Data/Logging/
+    /// /YuGiOh/Data/Logging/
     /// </summary>
     Logging = 7,
+    /// <summary>
+    /// /YuGiOh/Installer/
+    /// </summary>
+    Installer = 8,
+    /// <summary>
+    /// /temp/YuGiOh/Installer/
+    /// </summary>
+    TempInstaller = 9,
     
     /* Folder in YuGiOh.Tests.cs have values < 0 */
     

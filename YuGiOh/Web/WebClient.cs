@@ -138,7 +138,7 @@ internal static class WebClient
     /// </summary>
     /// <param name="requestUri">The uri of the website to download</param>
     /// <returns>The downloaded content as a <see cref="Stream"/></returns>
-    private static async Task<Stream?> DownloadStreamAsync(string requestUri)
+    internal static async Task<Stream?> DownloadStreamAsync(string requestUri)
     {
         try
         {
@@ -157,7 +157,7 @@ internal static class WebClient
     /// </summary>
     /// <param name="requestUri">The uri of the website to download</param>
     /// <returns>The downloaded content as a <see cref="string"/></returns>
-    private static async Task<string?> DownloadStringAsync(string requestUri)
+    internal static async Task<string?> DownloadStringAsync(string requestUri)
     {
         try
         {
