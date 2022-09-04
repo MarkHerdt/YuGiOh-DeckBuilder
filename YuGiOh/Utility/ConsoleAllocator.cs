@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace YuGiOh_DeckBuilder.Utility;
@@ -57,6 +58,16 @@ internal static class ConsoleAllocator
 
         ShowWindow(handle, swHide);
         IsEnabled = false;
+    }
+
+    /// <summary>
+    /// Kills the console <see cref="Process"/>
+    /// </summary>
+    internal static void Kill()
+    {
+        var process = Process.GetCurrentProcess();
+        
+        process.Kill();
     }
     #endregion
 }

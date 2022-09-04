@@ -38,6 +38,13 @@ namespace YuGiOh_DeckBuilder
         #endregion
         
         #region Methods
+        protected override void OnClosed(EventArgs eventArgs)
+        {
+            base.OnClosed(eventArgs);
+
+            ConsoleAllocator.Kill();
+        }
+
         /// <summary>
         /// Shows/hides the console
         /// </summary>
@@ -46,7 +53,8 @@ namespace YuGiOh_DeckBuilder
         private void Button_Console_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             if (!ConsoleAllocator.IsEnabled)
-            {            ConsoleAllocator.ShowConsoleWindow();
+            {           
+                ConsoleAllocator.ShowConsoleWindow();
                 Console.OutputEncoding = Encoding.UTF8;
                 
             }
