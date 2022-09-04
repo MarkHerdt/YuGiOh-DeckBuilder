@@ -22,6 +22,13 @@ internal static class ConsoleAllocator
     private const int swShow = 5;
     #endregion
 
+    #region Properties
+    /// <summary>
+    /// Indicates whether the console is currently enabled
+    /// </summary>
+    internal static bool IsEnabled { get; private set; }
+    #endregion
+    
     #region Methods
     /// <summary>
     /// Opens the console window
@@ -37,6 +44,7 @@ internal static class ConsoleAllocator
         else
         {
             ShowWindow(handle, swShow);
+            IsEnabled = true;
         }
     }
 
@@ -48,6 +56,7 @@ internal static class ConsoleAllocator
         var handle = GetConsoleWindow();
 
         ShowWindow(handle, swHide);
+        IsEnabled = false;
     }
     #endregion
 }

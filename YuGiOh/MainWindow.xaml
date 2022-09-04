@@ -116,5 +116,12 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        
+        <TabControl TabStripPlacement="Right" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="0" Margin="0,-1,-15,0" >
+            <StackPanel>
+                <Button Content="Console" Click="Button_Console_OnClick" />
+                <Separator BorderBrush="Gray" BorderThickness=".75" Margin="0,1,0,0" />
+            </StackPanel>
+        </TabControl>
     </Grid>
 </Window>

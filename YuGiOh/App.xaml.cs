@@ -40,10 +40,7 @@ namespace YuGiOh_DeckBuilder
         
         #region Constrcutor
         static App()
-        { 
-            ConsoleAllocator.ShowConsoleWindow();
-            Console.OutputEncoding = Encoding.UTF8;
-            
+        {
             UpdatesAvailable = AreUpdatesAvailable().Result;
             FinishUpdate();
         }

@@ -2,9 +2,11 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using YuGiOh_DeckBuilder.Utility;
 using YuGiOh_DeckBuilder.Utility.Project;
 using YuGiOh_DeckBuilder.Web;
 using YuGiOh_DeckBuilder.YuGiOh;
@@ -36,6 +38,24 @@ namespace YuGiOh_DeckBuilder
         #endregion
         
         #region Methods
+        /// <summary>
+        /// Shows/hides the console
+        /// </summary>
+        /// <param name="sender"><see cref="object"/> from which this method is called</param>
+        /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
+        private void Button_Console_OnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            if (!ConsoleAllocator.IsEnabled)
+            {            ConsoleAllocator.ShowConsoleWindow();
+                Console.OutputEncoding = Encoding.UTF8;
+                
+            }
+            else
+            {
+                ConsoleAllocator.HideConsoleWindow();
+            }
+        }
+        
         /// <summary>
         /// Downloads all <see cref="Packs"/> and <see cref="Cards"/> from https://yugioh.fandom.com/wiki/Yu-Gi-Oh!_Wiki
         /// </summary>
