@@ -26,7 +26,8 @@
                 <ComboBox x:Name="ComboBox_DateEnd" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDates)}" SelectedIndex="0" SelectionChanged="ComboBox_DateEnd_OnSelectionChanged" />
             </StackPanel>
 
-            <ListView ItemsSource="{Binding Path=(ygo:FilterSettings.Packs), IsAsync=True}" Grid.Row="1"
+            <!-- TODO: Only render the buttons in view -->
+            <ListView ItemsSource="{Binding Path=(ygo:FilterSettings.Packs), IsAsync=True}" Grid.Row="1" 
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SizeChanged="ListView_SizeChanged">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -75,14 +76,14 @@
                     </Grid.ColumnDefinitions>
                     <Button Content="Monster Type:" Style="{StaticResource Button}" Click="Button_MonsterType_Click" />
                     <WrapPanel Style="{StaticResource WrapPanel}" Grid.Column="1" >
-                        <ToggleButton Content="Normal" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Normal]}" />
-                        <ToggleButton Content="Effect" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Effect]}" />
-                        <ToggleButton Content="Fusion" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Fusion]}" />
-                        <ToggleButton Content="Ritual" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Ritual]}" />
-                        <ToggleButton Content="Synchro" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Synchro]}" />
-                        <ToggleButton Content="Xyz" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Xyz]}" />
-                        <ToggleButton Content="Pendulum" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Pendulum]}" />
-                        <ToggleButton Content="Link" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterTypes[Link]}" />
+                        <ToggleButton Content="Normal" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Normal]}" />
+                        <ToggleButton Content="Effect" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Effect]}" />
+                        <ToggleButton Content="Fusion" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Fusion]}" />
+                        <ToggleButton Content="Ritual" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Ritual]}" />
+                        <ToggleButton Content="Synchro" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Synchro]}" />
+                        <ToggleButton Content="Xyz" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Xyz]}" />
+                        <ToggleButton Content="Pendulum" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Pendulum]}" />
+                        <ToggleButton Content="Link" Style="{StaticResource ToggleButton}" IsChecked="{Binding MonsterCardTypes[Link]}" />
                     </WrapPanel>
                 </Grid>
                 

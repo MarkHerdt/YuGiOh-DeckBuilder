@@ -63,7 +63,7 @@ public partial class FilterSettingsWindow : Window
     {
         this.filterSettings.Packs.ForEach(pack => pack.IsChecked = false);
         ClearAll(this.filterSettings.CardTypes);
-        ClearAll(this.filterSettings.MonsterTypes);
+        ClearAll(this.filterSettings.MonsterCardTypes);
         ClearAll(this.filterSettings.PropertyTypes);
         ClearAll(this.filterSettings.Levels);
         ClearAll(this.filterSettings.Attributes);
@@ -76,7 +76,7 @@ public partial class FilterSettingsWindow : Window
         
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Packs));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.CardTypes));
-        this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.MonsterTypes));
+        this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.MonsterCardTypes));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.PropertyTypes));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Levels));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Attributes));
@@ -136,14 +136,14 @@ public partial class FilterSettingsWindow : Window
     }
     
     /// <summary>
-    /// Selects/Deselects all <see cref="FilterSettings.MonsterTypes"/>
+    /// Selects/Deselects all <see cref="FilterSettings.MonsterCardTypes"/>
     /// </summary>
     /// <param name="sender"><see cref="object"/> from which this method is called</param>
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_MonsterType_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.MonsterTypes);
-        this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.MonsterTypes));
+        SetAll(this.filterSettings.MonsterCardTypes);
+        this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.MonsterCardTypes));
     }
     
     /// <summary>

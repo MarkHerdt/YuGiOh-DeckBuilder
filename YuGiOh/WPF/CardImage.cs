@@ -34,6 +34,13 @@ public sealed class CardImage : Image
     /// Folder path, where all card images are contained
     /// </summary>
     private static readonly string imagesPath = Structure.BuildPath(Folder.Images);
+    /// <summary>
+    /// <see cref="BitmapSource"/> for placeholder card <see cref="Image"/>
+    /// </summary>
+    internal static BitmapSource CardBack { get; } = new BitmapImage(new Uri(Structure.BuildPath(Folder.Images, defaultImageName, Extension.jpg)))
+    {
+        CacheOption = BitmapCacheOption.OnLoad
+    };
     #endregion
     
     #region Members
@@ -45,16 +52,13 @@ public sealed class CardImage : Image
 
     #region Properties
     /// <summary>
-    /// Index of a <see cref="ACard"/> in <see cref="MainWindow.Cards"/>, this <see cref="CardImage"/> should display
+    /// Index of the <see cref="ACard"/> in <see cref="MainWindow.Cards"/>, this <see cref="CardImage"/> references
     /// </summary>
     internal int Index { get; }
     /// <summary>
-    /// <see cref="BitmapSource"/> for placeholder card <see cref="Image"/>
+    /// The <see cref="ACard"/> in <see cref="MainWindow.Cards"/>, this <see cref="CardImage"/> references
     /// </summary>
-    internal static readonly BitmapSource CardBack = new BitmapImage(new Uri(Structure.BuildPath(Folder.Images, defaultImageName, Extension.jpg)))
-    {
-        CacheOption = BitmapCacheOption.OnLoad
-    };
+    internal ACard CardData => MainWindow.Cards![this.Index];
     #endregion
     
     #region Constructor
@@ -98,12 +102,6 @@ public sealed class CardImage : Image
     #endregion
     
     #region Methods
-    /// <summary>
-    /// Gets the <see cref="ACard"/> in <see cref="MainWindow.Cards"/>, at <see cref="Index"/>
-    /// </summary>
-    /// <returns>The <see cref="ACard"/> in <see cref="MainWindow.Cards"/>, at <see cref="Index"/></returns>
-    internal ACard GetCardData() => MainWindow.Cards![this.Index];
-    
     /// <summary>
     /// Is called, when the value of <see cref="UIElement"/>.<see cref="UIElement.IsVisible"/> changes
     /// </summary>

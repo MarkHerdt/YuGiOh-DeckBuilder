@@ -128,6 +128,10 @@ public partial class MainWindow : INotifyPropertyChanged
     /// Contains every <see cref="CardImage"/> that is currently shown in <see cref="ListView_Deck"/>
     /// </summary>
     public List<CardImage> DeckListView { get; } = new();
+    /// <summary>
+    /// Contains every <see cref="CardImage"/> that is currently shown in <see cref="ListView_ExtraDeck"/>
+    /// </summary>
+    public List<CardImage> ExtraDeckListView { get; } = new();
     #endregion
 
     #region Events

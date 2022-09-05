@@ -1,4 +1,6 @@
-﻿namespace YuGiOh_DeckBuilder.YuGiOh.Enums;
+﻿using YuGiOh_DeckBuilder.YuGiOh.Decks.Cards;
+
+namespace YuGiOh_DeckBuilder.YuGiOh.Enums;
 
 /// <summary>
 /// All possible monster types <br/>
@@ -161,5 +163,9 @@ internal enum MonsterType
     /// <summary>
     /// https://yugioh.fandom.com/wiki/Zombie
     /// </summary>
-    Zombie = 38
+    Zombie = 38,
+    /// <summary>
+    /// Default value, when a <see cref="Monster"/> doesn't have a specific <see cref="MonsterType"/> 
+    /// </summary>
+    MISSING = -1
 }

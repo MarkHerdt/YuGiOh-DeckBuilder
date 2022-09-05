@@ -135,7 +135,7 @@ namespace YuGiOh_DeckBuilder
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
         private async void Button_UpdateApp_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            this.Button_UpdateApp.IsEnabled = false;
+            this.Button_UpdateApp.IsEnabled = false; // TODO: Uncomment with first TabItem in XML
             
             const string uri = "https://github.com/MarkHerdt/YuGiOh-DeckBuilder/releases/download/YGO-DB/YuGiOh-DeckBuilder.rar";
             var filePath = Path.Combine(AppContext.BaseDirectory, App.RarFile);
@@ -169,9 +169,10 @@ namespace YuGiOh_DeckBuilder
             const string extra = "#extra\n";
             const string side = "!side";
 
-            var deckCardPasscodes = this.DeckListView.Aggregate(string.Empty, (current, card) => $"{current}{card.GetCardData().Passcode.ToString()}\n");
+            var deckCardPasscodes = this.DeckListView.Aggregate(string.Empty, (current, card) => $"{current}{card.CardData.Passcode.ToString()}\n");
+            var extraDeckCardPasscodes = this.ExtraDeckListView.Aggregate(string.Empty, (current, card) => $"{current}{card.CardData.Passcode.ToString()}\n");
             
-            File.WriteAllText(Structure.BuildPath(Folder.Export, this.TextBox_Export.Text, Extension.ydk), main + deckCardPasscodes + extra + side);
+            File.WriteAllText(Structure.BuildPath(Folder.Export, this.TextBox_Export.Text, Extension.ydk), main + deckCardPasscodes + extra + extraDeckCardPasscodes + side);
 
             this.TextBox_Export.Text = string.Empty;
         }

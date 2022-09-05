@@ -9,6 +9,12 @@
         xmlns:wpf="clr-namespace:YuGiOh_DeckBuilder.WPF">
 
     <Grid>
+        
+        <Grid.Resources>
+            <Image x:Key="Search_Icon" Source="Resources/Search_Icon.png" />
+            <Image x:Key="Settings_Icon" Source="Resources/Settings_Icon.png" />
+        </Grid.Resources>
+        
         <TabControl>
             <TabItem Header="Download">
                 <Grid>
@@ -22,7 +28,7 @@
                     <Button Content="Download Cards" Click="Button_Download_OnClick" Margin="10,10,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
                     <Button Content="Update Cards" Click="Button_UpdateCards_OnClick" Margin="10,95,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
                     <Button Content="Load Cards" Click="Button_LoadCards_OnClick" Height="50" Margin="150,10,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
-                    <Button x:Name="Button_UpdateApp" Content="Update App" IsEnabled="{Binding Path=(ygo:App.UpdatesAvailable), IsAsync=True}" Click="Button_UpdateApp_OnClick" 
+                    <Button x:Name="Button_UpdateApp" Content="Update App" IsEnabled="{Binding Path=(ygo:App.UpdatesAvailable), IsAsync=True}" Click="Button_UpdateApp_OnClick"
                             Margin="0,10,10,0" Style="{StaticResource Button}" HorizontalAlignment="Right" />
                 </Grid>
             </TabItem>
@@ -60,19 +66,32 @@
                                 </Viewbox>
                             </Border>
 
-                            <ScrollViewer Grid.Row="2">
+                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
                                 <TextBox x:Name="TextBox_Description" IsReadOnly="True" TextWrapping="Wrap" FontSize="20" Padding="5,2.5,5,0"/>
                             </ScrollViewer>
                         </Grid>
                     </Grid>
 
                     <Grid Grid.Column="1">
-                        <StackPanel Orientation="Horizontal" Margin="10,0,10,0" VerticalAlignment="Top" Height="35">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".075*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height=".375*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button Content="Export" Width="50" Click="Button_Export_OnClick" />
-                            <TextBox x:Name="TextBox_Export" Width="200" />
+                            <TextBox x:Name="TextBox_Export" Width="200" VerticalContentAlignment="Center" FontSize="18.75" />
                         </StackPanel>
                         <wpf:CardListView x:Name="ListView_Deck" ItemsSource="{Binding Path=(ygo:MainWindow.DeckListView), IsAsync=True}" 
-                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10,40,10,10" RenderTransformOrigin="0.5,0.5">
+                                          Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </wpf:CardListView>
+                        <wpf:CardListView x:Name="ListView_ExtraDeck" ItemsSource="{Binding Path=(ygo:MainWindow.ExtraDeckListView), IsAsync=True}" 
+                                          Grid.Row="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True" />
@@ -88,19 +107,19 @@
                                     <Setter Property="Margin" Value="0,0,5,0" />
                                 </Style>
                             </StackPanel.Resources>
-                            <TextBox Style="{StaticResource Margin}" x:Name="TextBox_Search" Width="150">
+                            <TextBox Style="{StaticResource Margin}" x:Name="TextBox_Search" Width="150" FontSize="18.75" VerticalContentAlignment="Center">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return" Command="{Binding Path=(ygo:MainWindow.SearchCommand)}" CommandParameter="{Binding ElementName=TextBox_Search, Path=Text}" />
                                 </TextBox.InputBindings>
                             </TextBox>
 
-                            <Button Style="{StaticResource Margin}" Click="Button_Search_OnClick" Width="40" Content="Search" />
-                            <Button Style="{StaticResource Margin}" Click="Button_Settings_OnClick" Width="50" Content="Settings" />
+                            <Button Style="{StaticResource Margin}" Click="Button_Search_OnClick" Width="40" Content="{StaticResource Search_Icon}" />
+                            <Button Style="{StaticResource Margin}" Click="Button_Settings_OnClick" Width="50" Content="{StaticResource Settings_Icon}" />
 
                             <ComboBox x:Name="ComboBox_Sort" Width="100" ItemsSource="{Binding Path=(ygo:MainWindow.Sorting)}" SelectedIndex="0" SelectionChanged="ComboBox_Sort_OnSelectionChanged" />
                             <Button x:Name="Button_SortingOrder" Style="{StaticResource Margin}" Click="Button_SortOrder_OnClick" Width="75" Content="Descending" />
 
-                            <TextBlock x:Name="TextBlock_CardCount" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBlock x:Name="TextBlock_CardCount" HorizontalAlignment="Center" VerticalAlignment="Center" Text="0" FontWeight="Medium" />
                         </StackPanel>
 
                         <wpf:CardListView x:Name="ListView_Cards" ItemsSource="{Binding Path=(ygo:MainWindow.CardsListView), IsAsync=True}" 

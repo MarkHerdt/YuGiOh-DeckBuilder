@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
 using YuGiOh_DeckBuilder.YuGiOh.Enums;
@@ -39,6 +40,95 @@ internal sealed record Monster
     
 ) : ACard(Localized, Endpoint, ImageEndpoint, Passcode, Rarities, Statuses)
 {
+    #region Statics
+    /// <summary>
+    /// All possible card types of a <see cref="Monster"/>
+    /// </summary>
+    internal static ReadOnlyCollection<MonsterType> MonsterCardTypes { get; } = new
+    (
+        new List<MonsterType>
+        {
+            MonsterType.Normal,
+            MonsterType.Effect,
+            MonsterType.Fusion,
+            MonsterType.Ritual,
+            MonsterType.Synchro,
+            MonsterType.Xyz,
+            MonsterType.Pendulum,
+            MonsterType.Link
+        }
+    );
+    /// <summary>
+    /// All possible ability types of a <see cref="Monster"/>
+    /// </summary>
+    internal static ReadOnlyCollection<MonsterType> Abilities { get; } = new
+    (
+        new List<MonsterType>
+        {
+            MonsterType.Flip,
+            MonsterType.Gemini,
+            MonsterType.Spirit,
+            MonsterType.Toon,
+            MonsterType.Tuner,
+            MonsterType.Union
+        }
+    );
+    /// <summary>
+    /// All possible types of a <see cref="Monster"/>
+    /// </summary>
+    internal static ReadOnlyCollection<MonsterType> Types { get; } = new
+    (
+        new List<MonsterType>
+        {
+            MonsterType.Aqua,
+            MonsterType.Beast,
+            MonsterType.BeastWarrior,
+            MonsterType.CreatorGod,
+            MonsterType.Cyberse,
+            MonsterType.Dinosaur,
+            MonsterType.DivineBeast,
+            MonsterType.Dragon,
+            MonsterType.Fairy,
+            MonsterType.Fiend,
+            MonsterType.Fish,
+            MonsterType.Gemini,
+            MonsterType.Insect,
+            MonsterType.Machine,
+            MonsterType.Plant,
+            MonsterType.Psychic,
+            MonsterType.Pyro,
+            MonsterType.Reptile,
+            MonsterType.Rock,
+            MonsterType.SeaSerpent,
+            MonsterType.Spellcaster,
+            MonsterType.Thunder,
+            MonsterType.Warrior,
+            MonsterType.WingedBeast,
+            MonsterType.Wyrm,
+            MonsterType.Zombie
+        }
+    );
+    #endregion
+    
+    #region Members
+    /// <summary>
+    /// The card type of this <see cref="Monster"/>
+    /// </summary>
+    private MonsterType monsterCardType;
+    /// <summary>
+    /// The ability type of this <see cref="Monster"/>
+    /// </summary>
+    private MonsterType ability;
+    /// <summary>
+    /// The type of this <see cref="Monster"/>
+    /// </summary>
+    private MonsterType type;
+    /// <summary>
+    /// Indicates whether this <see cref="Monster"/> belongs in the extra deck
+    /// </summary>
+    private bool isExtraDeckCard;
+    #endregion
+    
     #region Properties
     /// <summary>
     /// The <see cref="Enums.CardType"/> of this <see cref="ACard"/>
@@ -69,7 +159,7 @@ internal sealed record Monster
     /// All <see cref="MonsterType"/>s of this <see cref="Monster"/>
     /// </summary>
     [JsonProperty(Order = 8)]
-    public IEnumerable<MonsterType> MonsterTypes { get; } = MonsterTypes;
+    public IEnumerable<MonsterType> MonsterTypes { get; private set; } = MonsterTypes;
     /// <summary>
     /// Attack value of this <see cref="Monster"/> card <br/>
     /// <i>Will be -1 if the value would be '?'</i>
@@ -85,8 +175,24 @@ internal sealed record Monster
     #endregion
     
     #region Methods
-    internal override IEnumerable<MonsterType> GetMonsterTypes() => this.MonsterTypes; // TODO: Initialize a single property for the MonsterType in -> FilterSettings.MonsterTypes / FilterSettings.Abilities / FilterSettings.Types
+    internal override void Init()
+    {
+        this.monsterCardType = this.MonsterTypes.FirstOrDefault(monsterType => MonsterCardTypes.Contains(monsterType), MonsterType.MISSING);
+        this.ability = this.MonsterTypes.FirstOrDefault(monsterType => Abilities.Contains(monsterType), MonsterType.MISSING);
+        this.type = this.MonsterTypes.FirstOrDefault(monsterType => Types.Contains(monsterType), MonsterType.MISSING);
+        this.isExtraDeckCard = this.monsterCardType is MonsterType.Fusion or MonsterType.Synchro or MonsterType.Xyz or MonsterType.Link;
 
+        this.MonsterTypes = Enumerable.Empty<MonsterType>();
+    }
+    
+    internal override MonsterType GetMonsterType() => this.monsterCardType;
+    
+    internal override MonsterType GetAbilityType() => this.ability;
+    
+    internal override MonsterType GetType() => this.type;
+    
+    internal override bool IsExtraDeckCard() => this.isExtraDeckCard;
+    
     internal override int GetLevel() => this.Level;
     
     internal override Attribute GetAttribute() => this.Attribute;

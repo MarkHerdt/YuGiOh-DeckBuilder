@@ -83,7 +83,7 @@ public sealed partial class YuGiOhTests
     [Fact]
     public async void TestSerializing()
     {
-        var testObject = Localized.Error;
+        var testObject = this.testMonster;
 
         await this.Serialize(testObject);
     }

@@ -8,11 +8,34 @@ using YuGiOh_DeckBuilder.YuGiOh;
 using YuGiOh_DeckBuilder.YuGiOh.Decks.Cards;
 using YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
 using YuGiOh_DeckBuilder.YuGiOh.Enums;
+using Attribute = YuGiOh_DeckBuilder.YuGiOh.Enums.Attribute;
 
 namespace YuGiOh_DeckBuilder_Tests.YuGiOh.Tests;
 
 public sealed partial class YuGiOhTests
 {
+    #region Members
+    /// <summary>
+    /// <see cref="Monster"/>
+    /// </summary>
+    private readonly Monster testMonster = new
+    (
+        Localized: Localized.Error,
+        Endpoint: "TEST_ENDPOINT",
+        ImageEndpoint: "TEST_IMAGE_ENDPOINT",
+        Passcode: 12345678,
+        Rarities: Enum.GetValues<Rarity>(),
+        Statuses: Enum.GetValues<Status>(),
+        Level: 13,
+        Attribute: Attribute.MISSING,
+        LinkArrows: Enum.GetValues<LinkArrow>(),
+        PendulumScale: 13,
+        MonsterTypes: Enum.GetValues<MonsterType>(),
+        Attack: int.MaxValue,
+        Defense: int.MaxValue
+    );
+    #endregion
+    
     #region Methods
     /// <summary>
     /// Adds a single deserialized pack/card-endpoint from /Data/Packs/ to <see cref="YuGiOhFandom.Packs"/>

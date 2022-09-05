@@ -59,6 +59,8 @@ internal abstract record ACard(Localized Localized, string Endpoint, string Imag
     #endregion
 
     #region Methods
+    internal virtual void Init() { }
+    
     /// <summary>
     /// Gets the localized <see cref="Cards.Localized.Name"/> depending on the currently set <see cref="MainWindow.Language"/> <br/>
     /// <i>If the name for the currently set <see cref="MainWindow.Language"/> is <see cref="string"/>.<see cref="string.Empty"/>, the <see cref="Language.en"/> name will be returned</i>
@@ -92,13 +94,31 @@ internal abstract record ACard(Localized Localized, string Endpoint, string Imag
 
         return description;
     }
-
+    
     /// <summary>
-    /// Gets the <see cref="Monster.MonsterTypes"/> of a <see cref="Monster"/> card
+    /// Gets the <see cref="Monster.monsterCardType"/> of a <see cref="Monster"/> card
     /// </summary>
-    /// <returns>The <see cref="Monster.MonsterTypes"/> of a <see cref="Monster"/> card</returns>
-    internal virtual IEnumerable<MonsterType> GetMonsterTypes() => Array.Empty<MonsterType>();
-
+    /// <returns>The <see cref="Monster.monsterCardType"/> of a <see cref="Monster"/> card</returns>
+    internal virtual MonsterType GetMonsterType() => MonsterType.MISSING;
+    
+    /// <summary>
+    /// Gets the <see cref="Monster.ability"/> of a <see cref="Monster"/> card
+    /// </summary>
+    /// <returns>The <see cref="Monster.ability"/> of a <see cref="Monster"/> card</returns>
+    internal virtual MonsterType GetAbilityType() => MonsterType.MISSING;
+    
+    /// <summary>
+    /// Gets the <see cref="Monster.type"/> of a <see cref="Monster"/> card
+    /// </summary>
+    /// <returns>The <see cref="Monster.type"/> of a <see cref="Monster"/> card</returns>
+    internal new virtual MonsterType GetType() => MonsterType.MISSING;
+    
+    /// <summary>
+    /// Indicates whether this <see cref="ACard"/> belongs in the extra deck or not
+    /// </summary>
+    /// <returns>True, this <see cref="ACard"/> belongs in the extra deck, False, it belongs in the normal deck</returns>
+    internal virtual bool IsExtraDeckCard() => false;
+    
     /// <summary>
     /// Gets the <see cref="Spell.PropertyType"/> of a <see cref="Spell"/>/<see cref="Trap"/> card
     /// </summary>

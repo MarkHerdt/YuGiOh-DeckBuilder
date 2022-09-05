@@ -32,17 +32,7 @@ internal record FilterSettings : INotifyPropertyChanged
     /// <summary>
     /// Determines what <see cref="MonsterType"/> to search for
     /// </summary>
-    public Dictionary<MonsterType, bool> MonsterTypes { get; } = new()
-    {
-        { MonsterType.Normal,   false },
-        { MonsterType.Effect,   false },
-        { MonsterType.Fusion,   false },
-        { MonsterType.Ritual,   false },
-        { MonsterType.Synchro,  false },
-        { MonsterType.Xyz,      false },
-        { MonsterType.Pendulum, false },
-        { MonsterType.Link,     false }
-    };
+    public Dictionary<MonsterType, bool> MonsterCardTypes { get; } = Monster.MonsterCardTypes.ToDictionary(key => key, value => false );
     /// <summary>
     /// Determines what <see cref="PropertyType"/> to search for
     /// </summary>
@@ -74,47 +64,11 @@ internal record FilterSettings : INotifyPropertyChanged
     /// <summary>
     /// Determines what <see cref="MonsterType"/> to search for
     /// </summary>
-    public Dictionary<MonsterType, bool> Abilities { get; } = new()
-    {
-        { MonsterType.Flip,   false },
-        { MonsterType.Gemini, false },
-        { MonsterType.Spirit, false },
-        { MonsterType.Toon,   false },
-        { MonsterType.Tuner,  false },
-        { MonsterType.Union,  false }
-    };
+    public Dictionary<MonsterType, bool> Abilities { get; } = Monster.Abilities.ToDictionary(key => key, _ => false);
     /// <summary>
     /// Determines what <see cref="MonsterType"/> to search for
     /// </summary>
-    public Dictionary<MonsterType, bool> Types { get; } = new()
-    {
-        { MonsterType.Aqua,         false },
-        { MonsterType.Beast,        false },
-        { MonsterType.BeastWarrior, false },
-        { MonsterType.CreatorGod,   false },
-        { MonsterType.Cyberse,      false },
-        { MonsterType.Dinosaur,     false },
-        { MonsterType.DivineBeast,  false },
-        { MonsterType.Dragon,       false },
-        { MonsterType.Fairy,        false },
-        { MonsterType.Fiend,        false },
-        { MonsterType.Fish,         false },
-        { MonsterType.Gemini,       false },
-        { MonsterType.Insect,       false },
-        { MonsterType.Machine,      false },
-        { MonsterType.Plant,        false },
-        { MonsterType.Psychic,      false },
-        { MonsterType.Pyro,         false },
-        { MonsterType.Reptile,      false },
-        { MonsterType.Rock,         false },
-        { MonsterType.SeaSerpent,   false },
-        { MonsterType.Spellcaster,  false },
-        { MonsterType.Thunder,      false },
-        { MonsterType.Warrior,      false },
-        { MonsterType.WingedBeast,  false },
-        { MonsterType.Wyrm,         false },
-        { MonsterType.Zombie,       false }
-    };
+    public Dictionary<MonsterType, bool> Types { get; } = Monster.Types.ToDictionary(key => key, _ => false);
     /// <summary>
     /// Determines what <see cref="Monster.PendulumScale"/> to search for
     /// </summary>

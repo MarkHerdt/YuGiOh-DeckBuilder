@@ -6,8 +6,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
 using YuGiOh_DeckBuilder.Extensions;
 using YuGiOh_DeckBuilder.Utility.Json;
 using YuGiOh_DeckBuilder.Utility.Project;
@@ -39,6 +37,7 @@ public partial class MainWindow
         this.ComboBox_Sort.DataContext = this;
         this.ListView_Cards.DataContext = this;
         this.ListView_Deck.DataContext = this;
+        this.ListView_ExtraDeck.DataContext = this;
         this.Image_Selected.DataContext = this;
 
         this.Image_Selected.Source = CardImage.CardBack;
@@ -90,6 +89,7 @@ public partial class MainWindow
                     card.Localized = localized;
                 }
                 
+                card.Init();
                 concurrentBag.Add(card);
             }
         });
@@ -249,24 +249,24 @@ public partial class MainWindow
         
         if (cardTypes.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => cardTypes.Contains(cardImage.GetCardData().CardType)).ToList();
+            return cardImages.AsParallel().Where(cardImage => cardTypes.Contains(cardImage.CardData.CardType)).ToList();
         }
 
         return cardImages;
     }
 
     /// <summary>
-    /// Searches any <see cref="CardImage"/> whose <see cref="Monster.MonsterTypes"/> match the selected <see cref="FilterSettings.MonsterTypes"/> in <see cref="filterSettings"/>
+    /// Searches any <see cref="CardImage"/> whose <see cref="Monster.MonsterTypes"/> match the selected <see cref="FilterSettings.MonsterCardTypes"/> in <see cref="filterSettings"/>
     /// </summary>
     /// <param name="cardImages">The cards to search in</param>
-    /// <returns>Every card in the given cardImages, whose <see cref="Monster.MonsterTypes"/> match the selected <see cref="FilterSettings.MonsterTypes"/> in <see cref="filterSettings"/></returns>
+    /// <returns>Every card in the given cardImages, whose <see cref="Monster.MonsterTypes"/> match the selected <see cref="FilterSettings.MonsterCardTypes"/> in <see cref="filterSettings"/></returns>
     private List<CardImage> SearchMonsterTypes(List<CardImage> cardImages)
     {
-        var monsterTypes = filterSettings.MonsterTypes.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+        var monsterTypes = filterSettings.MonsterCardTypes.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
 
         if (monsterTypes.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => monsterTypes.Any(cardImage.GetCardData().GetMonsterTypes().Contains)).ToList();
+            return cardImages.AsParallel().Where(cardImage => monsterTypes.Any(monsterType => monsterType == cardImage.CardData.GetMonsterType())).ToList();
         }
 
         return cardImages;
@@ -283,7 +283,7 @@ public partial class MainWindow
         
         if (propertyTypes.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => propertyTypes.Contains(cardImage.GetCardData().GetPropertyType())).ToList();
+            return cardImages.AsParallel().Where(cardImage => propertyTypes.Contains(cardImage.CardData.GetPropertyType())).ToList();
         }
 
         return cardImages;
@@ -301,7 +301,7 @@ public partial class MainWindow
         
         if (levels.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => levels.Contains(cardImage.GetCardData().GetLevel())).ToList();
+            return cardImages.AsParallel().Where(cardImage => levels.Contains(cardImage.CardData.GetLevel())).ToList();
         }
 
         return cardImages;
@@ -319,7 +319,7 @@ public partial class MainWindow
         
         if (attributes.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => attributes.Contains(cardImage.GetCardData().GetAttribute())).ToList();
+            return cardImages.AsParallel().Where(cardImage => attributes.Contains(cardImage.CardData.GetAttribute())).ToList();
         }
 
         return cardImages;
@@ -336,7 +336,7 @@ public partial class MainWindow
 
         if (abilities.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => abilities.Any(cardImage.GetCardData().GetMonsterTypes().Contains)).ToList();
+            return cardImages.AsParallel().Where(cardImage => abilities.Any(ability => ability == cardImage.CardData.GetAbilityType())).ToList();
         }
 
         return cardImages;
@@ -353,7 +353,7 @@ public partial class MainWindow
 
         if (types.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => types.Any(cardImage.GetCardData().GetMonsterTypes().Contains)).ToList();
+            return cardImages.AsParallel().Where(cardImage => types.Any(type => type == cardImage.CardData.GetType())).ToList();
         }
 
         return cardImages;
@@ -371,7 +371,7 @@ public partial class MainWindow
         
         if (levels.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => levels.Contains(cardImage.GetCardData().GetPendulumScale())).ToList();
+            return cardImages.AsParallel().Where(cardImage => levels.Contains(cardImage.CardData.GetPendulumScale())).ToList();
         }
 
         return cardImages;
@@ -389,7 +389,7 @@ public partial class MainWindow
         
         if (linkArrows.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => linkArrows.Any(cardImage.GetCardData().GetLinkArrows().Contains)).ToList();
+            return cardImages.AsParallel().Where(cardImage => linkArrows.Any(cardImage.CardData.GetLinkArrows().Contains)).ToList();
         }
 
         return cardImages;
@@ -407,7 +407,7 @@ public partial class MainWindow
         
         if (rarities.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => rarities.Any(cardImage.GetCardData().Rarities.Contains)).ToList();
+            return cardImages.AsParallel().Where(cardImage => rarities.Any(cardImage.CardData.Rarities.Contains)).ToList();
         }
 
         return cardImages;
@@ -425,7 +425,7 @@ public partial class MainWindow
         
         if (statuses.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => statuses.Any(cardImage.GetCardData().Statuses.Contains)).ToList();
+            return cardImages.AsParallel().Where(cardImage => statuses.Any(cardImage.CardData.Statuses.Contains)).ToList();
         }
 
         return cardImages;
@@ -443,11 +443,11 @@ public partial class MainWindow
         {
             return cardImages.AsParallel().Where(cardImage =>
             {
-                if (cardImage.GetCardData().GetName().Contains(searchString!, StringComparison.OrdinalIgnoreCase))
+                if (cardImage.CardData.GetName().Contains(searchString!, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
-                if (cardImage.GetCardData().GetDescription().Contains(searchString!, StringComparison.OrdinalIgnoreCase))
+                if (cardImage.CardData.GetDescription().Contains(searchString!, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -474,13 +474,13 @@ public partial class MainWindow
             switch (sorting)
             {
                 case YuGiOh.Enums.Sorting.Level:
-                    return cardImages.OrderBy(card => card.GetCardData().GetLevel()).ToList();
+                    return cardImages.OrderBy(card => card.CardData.GetLevel()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Attack:
-                    return cardImages.OrderBy(card => card.GetCardData().GetAttack()).ToList();
+                    return cardImages.OrderBy(card => card.CardData.GetAttack()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Defense:
-                    return cardImages.OrderBy(card => card.GetCardData().GetDefense()).ToList();
+                    return cardImages.OrderBy(card => card.CardData.GetDefense()).ToList();
             }
         }
         else
@@ -488,13 +488,13 @@ public partial class MainWindow
             switch (sorting)
             {
                 case YuGiOh.Enums.Sorting.Level:
-                    return cardImages.OrderByDescending(card => card.GetCardData().GetLevel()).ToList();
+                    return cardImages.OrderByDescending(card => card.CardData.GetLevel()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Attack:
-                    return cardImages.OrderByDescending(card => card.GetCardData().GetAttack()).ToList();
+                    return cardImages.OrderByDescending(card => card.CardData.GetAttack()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Defense:
-                    return cardImages.OrderByDescending(card => card.GetCardData().GetDefense()).ToList();
+                    return cardImages.OrderByDescending(card => card.CardData.GetDefense()).ToList();
             }
         }
 
@@ -519,36 +519,70 @@ public partial class MainWindow
     /// <param name="cardImage">The <see cref="CardImage"/> to add to <see cref="DeckListView"/></param>
     internal void AddCardToDeck(CardImage cardImage)
     {
-        var deckIndex = this.DeckListView.FindIndex(deckCardImage => deckCardImage.Index == cardImage.Index);
-
-        if (deckIndex != -1)
+        // TODO: Sort cards by currently set sorting
+        
+        if (cardImage.CardData.IsExtraDeckCard())
         {
-            this.DeckListView.Insert(deckIndex, cardImage);
+            AddOrInsert(this.ExtraDeckListView, cardImage);
+            this.OnPropertyChanged(nameof(this.ExtraDeckListView));
         }
         else
         {
-            this.DeckListView.Add(cardImage);
+            AddOrInsert(this.DeckListView, cardImage);
+            this.OnPropertyChanged(nameof(this.DeckListView));
         }
-        
-        // TODO: Sort cards by currently set sorting
-        
-        this.OnPropertyChanged(nameof(this.DeckListView));
     }
 
+    /// <summary>
+    /// Adds or inserts the given <see cref="CardImage"/> into the given <see cref="List{T}"/>
+    /// </summary>
+    /// <param name="listView">The <see cref="List{T}"/> to add the <see cref="CardImage"/> to</param>
+    /// <param name="cardImage">The <see cref="CardImage"/> to add to the <see cref="List{T}"/></param>
+    private static void AddOrInsert(List<CardImage> listView, CardImage cardImage)
+    {
+        var deckIndex = listView.FindIndex(deckCardImage => deckCardImage.Index == cardImage.Index);
+        
+        if (deckIndex != -1)
+        {
+            listView.Insert(deckIndex, cardImage);
+        }
+        else
+        {
+            listView.Add(cardImage);
+        }
+    }
+    
     /// <summary>
     /// Removes the given <see cref="CardImage"/> from <see cref="DeckListView"/>
     /// </summary>
     /// <param name="cardImage">The <see cref="CardImage"/> to remove from <see cref="DeckListView"/></param>
     internal void RemoveCardFromDeck(CardImage cardImage)
     {
-        var deckIndex = this.DeckListView.FindIndex(deckCardImage => deckCardImage.Index == cardImage.Index);
+        if (cardImage.CardData.IsExtraDeckCard())
+        {
+            Remove(this.ExtraDeckListView, cardImage);
+            this.OnPropertyChanged(nameof(this.ExtraDeckListView));
+        }
+        else
+        {
+            Remove(this.DeckListView, cardImage);
+            this.OnPropertyChanged(nameof(this.DeckListView));
+        }
+    }
+
+    /// <summary>
+    /// Removes the given <see cref="CardImage"/> from the given <see cref="List{T}"/>
+    /// </summary>
+    /// <param name="listView">The <see cref="List{T}"/> to remove the <see cref="CardImage"/> from</param>
+    /// <param name="cardImage">The <see cref="CardImage"/> to remove from the <see cref="List{T}"/></param>
+    private static void Remove(List<CardImage> listView, CardImage cardImage)
+    {
+        var deckIndex = listView.FindIndex(deckCardImage => deckCardImage.Index == cardImage.Index);
         
         if (deckIndex != -1)
         {
-            this.DeckListView.RemoveAt(deckIndex);
+            listView.RemoveAt(deckIndex);
         }
-        
-        this.OnPropertyChanged(nameof(this.DeckListView));
     }
     #endregion
 }
