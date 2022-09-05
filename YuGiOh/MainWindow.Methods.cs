@@ -212,7 +212,7 @@ public partial class MainWindow
         search = this.SearchStatuses(search);
         search = this.SearchString(search, searchString);
         
-        this.CardsListView = this.SortCards(search, (Sorting)this.ComboBox_Sort.SelectedValue, this.sortingOrder[this.currentSortingOrder]);
+        this.CardsListView = this.SortCards(search, (Sorting)this.ComboBox_Sort.SelectedValue, this.currentSortingOrder);
     }
 
     /// <summary>
@@ -467,9 +467,9 @@ public partial class MainWindow
     /// <param name="sorting"></param>
     /// <param name="sortingOrder"></param>
     /// <returns></returns>
-    private List<CardImage> SortCards(List<CardImage> cardImages, Sorting sorting, SortingOrder sortingOrder)
+    private List<CardImage> SortCards(List<CardImage> cardImages, Sorting sorting, bool sortingOrder)
     {
-        if (sortingOrder == SortingOrder.Ascending)
+        if (sortingOrder)
         {
             switch (sorting)
             {

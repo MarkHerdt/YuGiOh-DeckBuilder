@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Controls;
 using Xunit.Abstractions;
+using YuGiOh_DeckBuilder.Extensions;
 using YuGiOh_DeckBuilder.Utility.ObjectPools;
 using YuGiOh_DeckBuilder.WPF;
 using YuGiOh_DeckBuilder.YuGiOh;
@@ -91,12 +93,12 @@ public partial class MainWindow : INotifyPropertyChanged
     /// <summary>
     /// Mapping for the sorting order
     /// </summary>
-    private readonly Dictionary<bool, SortingOrder> sortingOrder = new()
+    private Dictionary<bool, Image> sortingOrder { get; } = new()
     {
-        { true, SortingOrder.Ascending },
-        { false, SortingOrder.Descending }
+        { true, new Image { Source = Properties.Resources.Sort_Ascending_Icon.ToBitmapSource() } },
+        { false, new Image { Source = Properties.Resources.Sort_Descending_Icon.ToBitmapSource() } }
     };
-
+    
     /// <summary>
     /// Contains every <see cref="CardImage"/> that is currently shown in the <see cref="ListView_Cards"/>
     /// </summary>
@@ -110,7 +112,7 @@ public partial class MainWindow : INotifyPropertyChanged
     // ReSharper disable once MemberCanBePrivate.Global
     // ReSharper disable once CollectionNeverQueried.Global
     public List<Sorting> Sorting { get; } = Enum.GetValues<Sorting>().ToList();
-
+    
     /// <summary>
     /// <see cref="cardsListView"/>
     /// </summary>

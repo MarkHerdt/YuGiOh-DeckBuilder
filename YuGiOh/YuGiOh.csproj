@@ -26,6 +26,8 @@
   <ItemGroup>
     <None Remove="Resources\Search_Icon.png" />
     <None Remove="Resources\Settings_Icon.png" />
+    <None Remove="Resources\Sort-Ascending_Icon.png" />
+    <None Remove="Resources\Sort-Descending_Icon.png" />
   </ItemGroup>
   
   <ItemGroup>
@@ -92,6 +94,8 @@
   <ItemGroup>
     <Resource Include="Resources\Search_Icon.png" />
     <Resource Include="Resources\Settings_Icon.png" />
+    <Resource Include="Resources\Sort-Descending_Icon.png" />
+    <Resource Include="Resources\Sort-Ascending_Icon.png" />
   </ItemGroup>
 
   <ItemGroup>

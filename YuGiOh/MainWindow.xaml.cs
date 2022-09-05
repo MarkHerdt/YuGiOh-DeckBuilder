@@ -213,7 +213,7 @@ namespace YuGiOh_DeckBuilder
         /// <param name="selectionChangedEventArgs"><see cref="SelectionChangedEventArgs"/></param>
         private void ComboBox_Sort_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort.SelectedValue, this.sortingOrder[this.currentSortingOrder]);
+            this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort.SelectedValue, this.currentSortingOrder);
         }
 
         /// <summary>
@@ -224,11 +224,11 @@ namespace YuGiOh_DeckBuilder
         private void Button_SortOrder_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             this.currentSortingOrder = !this.currentSortingOrder;
-            this.Button_SortingOrder.Content = this.sortingOrder[this.currentSortingOrder].ToString();
+            this.Button_SortingOrder.Content = this.sortingOrder[this.currentSortingOrder];
 
             if (this.ComboBox_Sort.SelectedItem != null)
             {
-                this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort.SelectedItem, this.sortingOrder[this.currentSortingOrder]);   
+                this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort.SelectedItem, this.currentSortingOrder);   
             }
         }
         #endregion
