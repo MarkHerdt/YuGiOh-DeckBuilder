@@ -34,7 +34,8 @@ public partial class MainWindow
         this.SearchCommand = new Command(this.Search);
         
         this.TextBox_Search.DataContext = this;
-        this.ComboBox_Sort.DataContext = this;
+        this.ComboBox_Sort_CardListView.DataContext = this;
+        this.ComboBox_Sort_DeckListView.DataContext = this;
         this.ListView_Cards.DataContext = this;
         this.ListView_Deck.DataContext = this;
         this.ListView_ExtraDeck.DataContext = this;
@@ -212,7 +213,7 @@ public partial class MainWindow
         search = this.SearchStatuses(search);
         search = this.SearchString(search, searchString);
         
-        this.CardsListView = this.SortCards(search, (Sorting)this.ComboBox_Sort.SelectedValue, this.currentSortingOrder);
+        this.CardsListView = this.SortCards(search, (Sorting)this.ComboBox_Sort_CardListView.SelectedValue, this.currentCardSortingOrder);
     }
 
     /// <summary>

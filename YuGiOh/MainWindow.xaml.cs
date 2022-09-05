@@ -178,6 +178,34 @@ namespace YuGiOh_DeckBuilder
         }
         
         /// <summary>
+        /// Is fired when the selection in <see cref="ComboBox_Sort_CardListView"/> changes
+        /// </summary>
+        /// <param name="sender"><see cref="object"/> from which this method is called</param>
+        /// <param name="selectionChangedEventArgs"><see cref="SelectionChangedEventArgs"/></param>
+        private void ComboBox_SortDeckListView_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            this.DeckListView = this.SortCards(this.DeckListView, (Sorting)this.ComboBox_Sort_DeckListView.SelectedValue, this.currentDeckSortingOrder);
+            this.ExtraDeckListView = this.SortCards(this.ExtraDeckListView, (Sorting)this.ComboBox_Sort_DeckListView.SelectedValue, this.currentDeckSortingOrder);
+        }
+
+        /// <summary>
+        /// Sets the sorting order for <see cref="CardsListView"/>
+        /// </summary>
+        /// <param name="sender"><see cref="object"/> from which this method is called</param>
+        /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
+        private void Button_SortingOrderDeckListView_OnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            this.currentDeckSortingOrder = !this.currentDeckSortingOrder;
+            this.Button_SortingOrder_DeckListView.Content = this.deckSortingOrder[this.currentDeckSortingOrder];
+
+            if (this.ComboBox_Sort_DeckListView.SelectedItem != null)
+            {
+                this.DeckListView = this.SortCards(this.DeckListView, (Sorting)this.ComboBox_Sort_DeckListView.SelectedValue, this.currentDeckSortingOrder);
+                this.ExtraDeckListView = this.SortCards(this.ExtraDeckListView, (Sorting)this.ComboBox_Sort_DeckListView.SelectedValue, this.currentDeckSortingOrder);  
+            }
+        }
+        
+        /// <summary>
         /// Searches cards, depending on <see cref="filterSettings"/>
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
@@ -207,13 +235,13 @@ namespace YuGiOh_DeckBuilder
         }
         
         /// <summary>
-        /// Is fired when the selection in <see cref="ComboBox_Sort"/> changes
+        /// Is fired when the selection in <see cref="ComboBox_Sort_CardListView"/> changes
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="selectionChangedEventArgs"><see cref="SelectionChangedEventArgs"/></param>
-        private void ComboBox_Sort_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        private void ComboBox_SortCardListView_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort.SelectedValue, this.currentSortingOrder);
+            this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort_CardListView.SelectedValue, this.currentCardSortingOrder);
         }
 
         /// <summary>
@@ -221,14 +249,14 @@ namespace YuGiOh_DeckBuilder
         /// </summary>
         /// <param name="sender"><see cref="object"/> from which this method is called</param>
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
-        private void Button_SortOrder_OnClick(object sender, RoutedEventArgs routedEventArgs)
+        private void Button_SortingOrderCardListView_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            this.currentSortingOrder = !this.currentSortingOrder;
-            this.Button_SortingOrder.Content = this.sortingOrder[this.currentSortingOrder];
+            this.currentCardSortingOrder = !this.currentCardSortingOrder;
+            this.Button_SortingOrder_CardListView.Content = this.cardSortingOrder[this.currentCardSortingOrder];
 
-            if (this.ComboBox_Sort.SelectedItem != null)
+            if (this.ComboBox_Sort_CardListView.SelectedItem != null)
             {
-                this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort.SelectedItem, this.currentSortingOrder);   
+                this.CardsListView = this.SortCards(this.CardsListView, (Sorting)this.ComboBox_Sort_CardListView.SelectedItem, this.currentCardSortingOrder);   
             }
         }
         #endregion

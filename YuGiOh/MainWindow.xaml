@@ -13,8 +13,8 @@
         <Grid.Resources>
             <Image x:Key="Search_Icon" Source="Resources/Search_Icon.png" />
             <Image x:Key="Settings_Icon" Source="Resources/Settings_Icon.png" />
-            <Image x:Key="Sort-Ascending_Icon" Source="Resources/Sort-Ascending_Icon.png" />
-            <Image x:Key="Sort-Descending_Icon" Source="Resources/Sort-Descending_Icon.png" />
+            <Image x:Key="Card_Sort-Descending_Icon" Source="Resources/Sort-Descending_Icon.png" />
+            <Image x:Key="Deck_Sort-Descending_Icon" Source="Resources/Sort-Descending_Icon.png" />
         </Grid.Resources>
         
         <TabControl>
@@ -83,6 +83,8 @@
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <Button Content="Export" Width="50" Click="Button_Export_OnClick" />
                             <TextBox x:Name="TextBox_Export" Width="200" VerticalContentAlignment="Center" FontSize="18.75" />
+                            <ComboBox x:Name="ComboBox_Sort_DeckListView" ItemsSource="{Binding Path=(ygo:MainWindow.Sorting)}" SelectionChanged="ComboBox_SortDeckListView_OnSelectionChanged" Width="100" SelectedIndex="0" VerticalContentAlignment="Center"/>
+                            <Button x:Name="Button_SortingOrder_DeckListView" Click="Button_SortingOrderDeckListView_OnClick" Width="50" Content="{StaticResource Deck_Sort-Descending_Icon}" />
                         </StackPanel>
                         <wpf:CardListView x:Name="ListView_Deck" ItemsSource="{Binding Path=(ygo:MainWindow.DeckListView), IsAsync=True}" 
                                           Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -118,8 +120,8 @@
                             <Button Style="{StaticResource Margin}" Click="Button_Search_OnClick" Width="50" Content="{StaticResource Search_Icon}" />
                             <Button Style="{StaticResource Margin}" Click="Button_Settings_OnClick" Width="50" Content="{StaticResource Settings_Icon}" />
 
-                            <ComboBox x:Name="ComboBox_Sort" ItemsSource="{Binding Path=(ygo:MainWindow.Sorting)}" SelectionChanged="ComboBox_Sort_OnSelectionChanged" Width="100" SelectedIndex="0" />
-                            <Button x:Name="Button_SortingOrder" Click="Button_SortOrder_OnClick" Style="{StaticResource Margin}" Width="50" Content="{StaticResource Sort-Descending_Icon}" />
+                            <ComboBox x:Name="ComboBox_Sort_CardListView" ItemsSource="{Binding Path=(ygo:MainWindow.Sorting)}" SelectionChanged="ComboBox_SortCardListView_OnSelectionChanged" Width="100" SelectedIndex="0" VerticalContentAlignment="Center"/>
+                            <Button x:Name="Button_SortingOrder_CardListView" Click="Button_SortingOrderCardListView_OnClick" Style="{StaticResource Margin}" Width="50" Content="{StaticResource Card_Sort-Descending_Icon}" />
 
                             <TextBlock x:Name="TextBlock_CardCount" HorizontalAlignment="Center" VerticalAlignment="Center" Text="0" FontWeight="Medium" />
                         </StackPanel>

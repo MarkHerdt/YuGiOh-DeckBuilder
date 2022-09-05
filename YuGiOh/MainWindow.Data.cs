@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using Xunit.Abstractions;
 using YuGiOh_DeckBuilder.Extensions;
 using YuGiOh_DeckBuilder.Utility.ObjectPools;
@@ -89,20 +90,48 @@ public partial class MainWindow : INotifyPropertyChanged
     /// <summary>
     /// The currently set sorting order for <see cref="CardsListView"/>
     /// </summary>
-    private bool currentSortingOrder;
+    private bool currentCardSortingOrder;
+    /// <summary>
+    /// The currently set sorting order for <see cref="DeckListView"/> and <see cref="ExtraDeckListView"/>
+    /// </summary>
+    private bool currentDeckSortingOrder;
+    /// <summary>
+    /// <see cref="BitmapSource"/> for the sorting order <see cref="Image"/>s
+    /// </summary>
+    private static readonly List<BitmapSource> sortingOrderImages = new()
+    {
+        Properties.Resources.Sort_Ascending_Icon.ToBitmapSource()!,
+        Properties.Resources.Sort_Descending_Icon.ToBitmapSource()!
+    };
     /// <summary>
     /// Mapping for the sorting order
     /// </summary>
-    private Dictionary<bool, Image> sortingOrder { get; } = new()
+    private readonly Dictionary<bool, Image> cardSortingOrder = new()
     {
-        { true, new Image { Source = Properties.Resources.Sort_Ascending_Icon.ToBitmapSource() } },
-        { false, new Image { Source = Properties.Resources.Sort_Descending_Icon.ToBitmapSource() } }
+        { true, new Image { Source = sortingOrderImages[0] } },
+        { false, new Image { Source = sortingOrderImages[1] } }
+    };
+    /// <summary>
+    /// Mapping for the sorting order
+    /// </summary>
+    private readonly Dictionary<bool, Image> deckSortingOrder = new()
+    {
+        { true, new Image { Source = sortingOrderImages[0] } },
+        { false, new Image { Source = sortingOrderImages[1] } }
     };
     
     /// <summary>
     /// Contains every <see cref="CardImage"/> that is currently shown in the <see cref="ListView_Cards"/>
     /// </summary>
     private List<CardImage> cardsListView = new();
+    /// <summary>
+    /// Contains every <see cref="CardImage"/> that is currently shown in the <see cref="ListView_Deck"/>
+    /// </summary>
+    private List<CardImage> deckListView = new();
+    /// <summary>
+    /// Contains every <see cref="CardImage"/> that is currently shown in the <see cref="ListView_ExtraDeck"/>
+    /// </summary>
+    private List<CardImage> extraDeckListView = new();
     #endregion
     
     #region Properties
@@ -112,7 +141,7 @@ public partial class MainWindow : INotifyPropertyChanged
     // ReSharper disable once MemberCanBePrivate.Global
     // ReSharper disable once CollectionNeverQueried.Global
     public List<Sorting> Sorting { get; } = Enum.GetValues<Sorting>().ToList();
-    
+
     /// <summary>
     /// <see cref="cardsListView"/>
     /// </summary>
@@ -129,11 +158,27 @@ public partial class MainWindow : INotifyPropertyChanged
     /// <summary>
     /// Contains every <see cref="CardImage"/> that is currently shown in <see cref="ListView_Deck"/>
     /// </summary>
-    public List<CardImage> DeckListView { get; } = new();
+    public List<CardImage> DeckListView
+    {
+        get => this.deckListView;
+        private set
+        {
+            this.deckListView = value;
+            this.OnPropertyChanged(nameof(this.DeckListView));
+        }
+    }
     /// <summary>
     /// Contains every <see cref="CardImage"/> that is currently shown in <see cref="ListView_ExtraDeck"/>
     /// </summary>
-    public List<CardImage> ExtraDeckListView { get; } = new();
+    public List<CardImage> ExtraDeckListView
+    {
+        get => this.extraDeckListView;
+        private set
+        {
+            this.extraDeckListView = value;
+            this.OnPropertyChanged(nameof(this.ExtraDeckListView));
+        }
+    }
     #endregion
 
     #region Events
