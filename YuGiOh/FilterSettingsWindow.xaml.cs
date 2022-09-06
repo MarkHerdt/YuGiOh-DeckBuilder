@@ -10,13 +10,26 @@ namespace YuGiOh_DeckBuilder;
 /// <summary>
 /// <see cref="Window"/> to ste all <see cref="FilterSettings"/> for the search
 /// </summary>
+// ReSharper disable once RedundantExtendsListEntry
 public partial class FilterSettingsWindow : Window
 {
+    #region Constants
+    string test = DateTime.Now.ToString("yyyy MMMM dd");
+    /// <summary>
+    /// <see cref="string"/> formatting for every <see cref="DateTime"/> in <see cref="FilterSettingsWindow"/>
+    /// </summary>
+    internal const string DateTimeFormat = "yyyy MMMM dd";
+    #endregion
+    
     #region Members
     /// <summary>
     /// <see cref="FilterSettings"/>
     /// </summary>
     private readonly FilterSettings filterSettings;
+    /// <summary>
+    /// Is set after the <see cref="Window.OnActivated"/> has been called
+    /// </summary>
+    private bool isActivated;
     #endregion
 
     #region Properties
@@ -24,7 +37,13 @@ public partial class FilterSettingsWindow : Window
     /// Release dates of all <see cref="FilterSettings.Packs"/> in <see cref="filterSettings"/>
     /// </summary>
     // ReSharper disable once MemberCanBePrivate.Global
-    public List<DateTime> ReleaseDates { get; }
+    public List<DateTime> ReleaseDates { get; } = new();
+    /// <summary>
+    /// Content for <see cref="ComboBox_DateStart"/> and <see cref="ComboBox_DateEnd"/> <br/>
+    /// <i>Same order as <see cref="ReleaseDates"/></i>
+    /// </summary>
+    // ReSharper disable once MemberCanBePrivate.Global
+    public List<string> ReleaseDateFormats { get; } = new();
     #endregion
     
     #region Events
@@ -47,7 +66,12 @@ public partial class FilterSettingsWindow : Window
         this.ComboBox_DateStart.DataContext = this;
         this.ComboBox_DateEnd.DataContext = this;
 
-        this.ReleaseDates = new List<DateTime>(this.filterSettings.Packs.Select(pack => pack.ReleaseDate));
+        foreach (var pack in this.filterSettings.Packs) // TODO: Initialize once when packs are loaded
+        {
+            this.ReleaseDates.Add(pack.ReleaseDate);
+            this.ReleaseDateFormats.Add(pack.ReleaseDate.ToString(DateTimeFormat));
+        }
+        
         this.ComboBox_DateStart.SelectedIndex = this.ReleaseDates.IndexOf(this.filterSettings.DateStart);
         this.ComboBox_DateEnd.SelectedIndex = this.ReleaseDates.IndexOf(this.filterSettings.DateEnd);
     }
@@ -62,6 +86,8 @@ public partial class FilterSettingsWindow : Window
     private void Button_Clear_Click(object sender, RoutedEventArgs routedEventArgs)
     {
         this.filterSettings.Packs.ForEach(pack => pack.IsChecked = false);
+        this.filterSettings.DateStart = default;
+        this.filterSettings.DateEnd = default;
         ClearAll(this.filterSettings.CardTypes);
         ClearAll(this.filterSettings.MonsterCardTypes);
         ClearAll(this.filterSettings.PropertyTypes);
@@ -245,6 +271,12 @@ public partial class FilterSettingsWindow : Window
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Statuses));
     }
 
+    protected override void OnActivated(EventArgs eventArgs)
+    {
+        this.isActivated = true;
+        base.OnActivated(eventArgs);
+    }
+    
     /// <summary>
     /// Is fired when the selection in <see cref="ComboBox_DateStart"/> changes
     /// </summary>
@@ -252,19 +284,23 @@ public partial class FilterSettingsWindow : Window
     /// <param name="selectionChangedEventArgs"><see cref="SelectionChangedEventArgs"/></param>
     private void ComboBox_DateStart_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
     {
-        this.filterSettings.DateStart = (DateTime)(sender as ComboBox)!.SelectedItem;
-
+        if (!this.isActivated) return;
+        
+        var currentStartDate = this.ReleaseDates[this.ReleaseDateFormats.IndexOf((string)(sender as ComboBox)!.SelectedItem)];
+        
         foreach (var packToggleButton in this.filterSettings.Packs)
         {
             if (packToggleButton.ReleaseDate >= this.filterSettings.DateStart && packToggleButton.ReleaseDate <= this.filterSettings.DateEnd)
             {
-                packToggleButton.IsChecked = true;
-            }
-            else
-            {
                 packToggleButton.IsChecked = false;
             }
+            if (packToggleButton.ReleaseDate >= currentStartDate && packToggleButton.ReleaseDate <= this.filterSettings.DateEnd)
+            {
+                packToggleButton.IsChecked = true;
+            }
         }
+
+        this.filterSettings.DateStart = currentStartDate;
     }
     
     /// <summary>
@@ -274,19 +310,23 @@ public partial class FilterSettingsWindow : Window
     /// <param name="selectionChangedEventArgs"><see cref="SelectionChangedEventArgs"/></param>
     private void ComboBox_DateEnd_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
     {
-        this.filterSettings.DateEnd = (DateTime)(sender as ComboBox)!.SelectedItem;
+        if (!this.isActivated) return;
         
+        var currentEndDate = this.ReleaseDates[this.ReleaseDateFormats.IndexOf((string)(sender as ComboBox)!.SelectedItem)];
+
         foreach (var packToggleButton in this.filterSettings.Packs)
         {
             if (packToggleButton.ReleaseDate >= this.filterSettings.DateStart && packToggleButton.ReleaseDate <= this.filterSettings.DateEnd)
             {
-                packToggleButton.IsChecked = true;
-            }
-            else
-            {
                 packToggleButton.IsChecked = false;
             }
+            if (packToggleButton.ReleaseDate >= this.filterSettings.DateStart && packToggleButton.ReleaseDate <= currentEndDate)
+            {
+                packToggleButton.IsChecked = true;
+            }
         }
+        
+        this.filterSettings.DateEnd = currentEndDate;
     }
     
     /// <summary>

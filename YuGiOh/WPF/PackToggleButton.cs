@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using YuGiOh_DeckBuilder.YuGiOh;
 using YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
@@ -28,7 +29,10 @@ internal class PackToggleButton : ToggleButton
         var pack = MainWindow.Packs![index];
         this.Index = index;
         this.ReleaseDate = pack.ReleaseDate;
-        this.Content = string.Concat(pack.Name, " | ", pack.ReleaseDate.ToString("yyyy-MM-dd"));
+        this.Content = $"{pack.Name} [{pack.ReleaseDate:dd MMMM yyyy}]";
+
+        base.HorizontalContentAlignment = HorizontalAlignment.Right;
+        base.FontWeight = FontWeights.Medium;
 
         FilterSettingsWindow.OnSizeChanged += OnParentSizeChanged;
     }
@@ -41,7 +45,7 @@ internal class PackToggleButton : ToggleButton
     /// <param name="newWidth">The new width of the parent object</param>
     private void OnParentSizeChanged(double newWidth)
     {
-        base.Width = newWidth;
+        base.Width = newWidth - 15;
     }
     #endregion
 }

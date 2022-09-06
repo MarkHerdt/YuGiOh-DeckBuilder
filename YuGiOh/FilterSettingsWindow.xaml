@@ -22,8 +22,8 @@
 
             <StackPanel Grid.Row="0" Orientation="Horizontal">
                 <Button Content="Clear" Width="100" HorizontalAlignment="Left" Click="Button_Clear_Click" />
-                <ComboBox x:Name="ComboBox_DateStart" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDates)}" SelectedIndex="0" SelectionChanged="ComboBox_DateStart_OnSelectionChanged" />
-                <ComboBox x:Name="ComboBox_DateEnd" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDates)}" SelectedIndex="0" SelectionChanged="ComboBox_DateEnd_OnSelectionChanged" />
+                <ComboBox x:Name="ComboBox_DateStart" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDateFormats)}" SelectedIndex="0" SelectionChanged="ComboBox_DateStart_OnSelectionChanged" />
+                <ComboBox x:Name="ComboBox_DateEnd" Width="100" ItemsSource="{Binding Path=(fsw:FilterSettingsWindow.ReleaseDateFormats)}" SelectedIndex="0" SelectionChanged="ComboBox_DateEnd_OnSelectionChanged" />
             </StackPanel>
 
             <!-- TODO: Only render the buttons in view -->
