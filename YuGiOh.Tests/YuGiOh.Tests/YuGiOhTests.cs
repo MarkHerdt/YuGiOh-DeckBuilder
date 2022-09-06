@@ -3,7 +3,6 @@ using YuGiOh_DeckBuilder;
 using YuGiOh_DeckBuilder.Utility.Project;
 using YuGiOh_DeckBuilder.Web;
 using YuGiOh_DeckBuilder.YuGiOh;
-using YuGiOh_DeckBuilder.YuGiOh.Decks.Cards;
 using YuGiOh_DeckBuilder.YuGiOh.Logging;
 
 namespace YuGiOh_DeckBuilder_Tests.YuGiOh.Tests;

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using YuGiOh_DeckBuilder.Extensions;
-using YuGiOh_DeckBuilder.Utility;
 using YuGiOh_DeckBuilder.Utility.Project;
 using YuGiOh_DeckBuilder.Web;
 
@@ -41,9 +39,46 @@ namespace YuGiOh_DeckBuilder
         #region Constrcutor
         static App()
         {
+            AppDomain.CurrentDomain.UnhandledException += LogException;
+            
             UpdatesAvailable = AreUpdatesAvailable().Result;
             FinishUpdate();
         }
+        
+        /// <summary>
+        /// Logs every unhandled <see cref="Exception"/> to the console
+        /// </summary>
+        /// <param name="sender"><see cref="object"/> from which this method is called</param>
+        /// <param name="exceptionEventArgs"><see cref="UnhandledExceptionEventArgs"/></param>
+        private static void LogException(object sender, UnhandledExceptionEventArgs exceptionEventArgs)
+        {
+            var exception = (Exception)exceptionEventArgs.ExceptionObject;
+            
+            PrintException(exception);
+            
+            Console.Read();
+        }
+
+        /// <summary>
+        /// Prints the given <see cref="Exception"/> and every <see cref="Exception.InnerException"/> to the console
+        /// </summary>
+        /// <param name="exception">The <see cref="Exception"/> to print to the console</param>
+        private static void PrintException(Exception? exception)
+        {
+            while (true)
+            {
+                if (exception != null)
+                {
+                    Console.WriteLine(exception.ToString());
+
+                    exception = exception.InnerException;
+                    continue;
+                }
+
+                break;
+            }
+        }
+
         #endregion
 
         #region Methods
