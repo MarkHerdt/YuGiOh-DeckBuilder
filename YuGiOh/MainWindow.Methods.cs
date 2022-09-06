@@ -229,11 +229,11 @@ public partial class MainWindow
         {
             var cards = Packs!.AsParallel().Where((_, index) => packs.Any(pack => pack.Index == index)).SelectMany(pack => pack.Cards.Select(card =>
             {
-                return card.Index != 0 ? CardImages![card.Index] : new CardImage(card.Index); // TODO Use image object pool for error cards (index 0)
-
+                return card.Index != 0 ? CardImages![card.Index] : this.Dispatcher.Invoke(() => new CardImage(card.Index)); // TODO Use image object pool for error cards (index 0)
+                
             })).Distinct().ToList(); // TODO: Maybe there's a different way to prevent duplicate cards (is contained in multiple selected packs), then "Distinct()"
 
-            return new List<CardImage>(cards);;
+            return cards;
         }
         
         return new List<CardImage>(CardImages!.Skip(1)); // Skips the first card (error card)
