@@ -227,12 +227,23 @@ public partial class MainWindow
         
         if (packs.Any())
         {
+            // var missingCardIndices = new ConcurrentBag<int>();
+            
             var cards = Packs!.AsParallel().Where((_, index) => packs.Any(pack => pack.Index == index)).SelectMany(pack => pack.Cards.Select(card =>
             {
-                return card.Index != 0 ? CardImages![card.Index] : this.Dispatcher.Invoke(() => new CardImage(card.Index)); // TODO Use image object pool for error cards (index 0)
+                return CardImages![card.Index];
+                
+                //return card.Index != 0 ? CardImages![card.Index] : this.Dispatcher.Invoke(() => new CardImage(card.Index)); // TODO Use image object pool for error cards (index 0)
                 
             })).Distinct().ToList(); // TODO: Maybe there's a different way to prevent duplicate cards (is contained in multiple selected packs), then "Distinct()"
 
+            // foreach (var index in missingCardIndices)
+            // {
+            //     cards[index] = new CardImage(0);
+            // }
+            
+            //Console.WriteLine(missingCardIndices.Count);
+            
             return cards;
         }
         

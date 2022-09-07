@@ -22,7 +22,10 @@ internal sealed partial class YuGiOhFandom
 
         foreach (var packPath in Directory.GetFiles(Structure.BuildPath(Folder.Packs)))
         {
-            packs.Add((await Json.DeserializeAsync<Pack>(packPath))!);   
+            if (await Json.DeserializeAsync<Pack>(packPath) is { } pack )
+            {
+                packs.Add(pack);
+            }
         }
 
         foreach (var packData in this.PackData)
