@@ -117,6 +117,8 @@ internal sealed partial class YuGiOhFandom
             "Duelist_Alliance",
             "Eternity_Code",
             "Exclusive_Pack",
+            "EX_Starter_Box",
+            "EX-R_Starter_Box",
             "Fists_of_the_Gadgets",
             "Fusion_Enforcers",
             "Galactic_Overlord",
@@ -169,6 +171,18 @@ internal sealed partial class YuGiOhFandom
             "Star_Pack_ARC-V",
             "Star_Pack_Battle_Royal",
             "Star_Pack_VRAINS",
+            "Starter_Box",
+            "Starter_Deck_-_Jaden_Yuki",
+            "Starter_Deck_-_Syrus_Truesdale",
+            "Starter_Box:_Theatrical_Release",
+            "Starter_Deck:_Joey",
+            "Starter_Deck:_Kaiba",
+            "Starter_Deck:_Kaiba_Evolution",
+            "Starter_Deck_Kaiba_Reloaded",
+            "Starter_Deck:_Pegasus",
+            "Starter_Deck:_Yugi",
+            "Starter_Deck:_Yugi_Evolution",
+            "Starter_Deck_Yugi_Reloaded",
             "Tactical_Masters",
             "The_Grand_Creators",
             "The_Infinity_Chasers",
@@ -225,9 +239,15 @@ internal sealed partial class YuGiOhFandom
                 this.PackData.Add(new PackData(missingPackEndpoint));
             }
         }
-        
-        this.PackData.AddRange(await this.GetMissingPacks());
-        
+
+        foreach (var missingPack in await this.GetMissingPacks())
+        {
+            if (this.PackData.All(pack => pack.Endpoint != missingPack.Endpoint))
+            {
+                this.PackData.Add(missingPack);
+            }
+        }
+
         if (!stopCondition)
         {
             Log.Error(Error.PackStopConditionError, boosterPacksEndpoint, stopCondition.ToString());
