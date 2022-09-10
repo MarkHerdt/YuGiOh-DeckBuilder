@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +9,7 @@ using YuGiOh_DeckBuilder.Web;
 using YuGiOh_DeckBuilder.YuGiOh.Decks.Cards;
 using YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
 using YuGiOh_DeckBuilder.YuGiOh.Enums;
+using YuGiOh_DeckBuilder.YuGiOh.Logging;
 using YuGiOh_DeckBuilder.YuGiOh.Utility;
 using Attribute = YuGiOh_DeckBuilder.YuGiOh.Enums.Attribute;
 
@@ -22,28 +20,40 @@ namespace YuGiOh_DeckBuilder.YuGiOh;
 /// </summary>
 internal sealed partial class YuGiOhFandom
 {
+    //TODO: Delete files in folder if not update
+    
     #region Methods
     /// <summary>
     /// Serializes the <see cref="MainWindow.Packs"/> to .json files
     /// </summary>
     private async Task SerializePacksAsync()
     {
-        var packs = new ConcurrentBag<Pack>();
         var currentPack = 0;
         var packCount = this.PackData.Count;
 
         await Parallel.ForEachAsync(this.PackData, async (packData, token) => // TODO: Use cancellation token
         {
-            var pack = new Pack(packData.PackName ?? "MISSING", packData.ReleaseDate ?? default, packData.PackEndpoint, packData.Cards.ToList());
+            foreach (var card in packData.Cards)
+            {
+                if (this.CardData.FirstOrDefault(cardData => cardData.Endpoint == card.Endpoint) is { Passcode: { } } cardData)
+                {
+                    card.Passcode = cardData.Passcode.Value;
+                }
+                else
+                {
+                    if (card.Passcode < 1)
+                    {
+                        Log.Error(Error.PackCardPasscodeError, packData.Endpoint, card.Endpoint);
+                    }
+                }
+            }
             
-            await Json.SerializeAsync(this.packsFolder, packData.PackEndpoint, pack);
+            var pack = new Pack(packData.Name ?? string.Empty, packData.ReleaseDate ?? default, packData.Endpoint, packData.Cards.ToList());
             
-            packs.Add(pack);
-            
-            Output.Print("Serializing pack:", ++currentPack, packCount, packData.PackEndpoint, MainWindow.TestOutputHelper);
-        });
+            await Json.SerializeAsync(this.packsFolder, packData.Endpoint, pack);
 
-        MainWindow.Packs = new ReadOnlyCollection<Pack>(packs.ToList());
+            Output.Print("Serializing pack:", ++currentPack, packCount, packData.Endpoint, MainWindow.TestOutputHelper);
+        });
     }
     
     /// <summary>
@@ -54,25 +64,23 @@ internal sealed partial class YuGiOhFandom
         var currentCard = 0;
         var cardCount = this.CardData.Count;
         
-        await Parallel.ForEachAsync(this.CardData, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, async (data, token) => // TODO: Use cancellation token
+        await Parallel.ForEachAsync(this.CardData, async (cardData, token) => // TODO: Use cancellation token
         {
-            if (data.CardType! == typeof(Monster))
+            if (cardData.CardType! == typeof(Monster))
             {
-                await BuildMonsterCard(data);
+                await BuildMonsterCard(cardData);
             }
-            else if (data.CardType! == typeof(Spell))
+            else if (cardData.CardType! == typeof(Spell))
             {
-                await BuildSpellCard(data);
+                await BuildSpellCard(cardData);
             }
-            else if (data.CardType! == typeof(Trap))
+            else if (cardData.CardType! == typeof(Trap))
             {
-                await BuildTrapCard(data);
+                await BuildTrapCard(cardData);
             }
             
-            Output.Print("Serializing Card:", ++currentCard, cardCount, data.CardNames[Language.en], MainWindow.TestOutputHelper);
+            Output.Print("Serializing Card:", ++currentCard, cardCount, cardData.Endpoint, MainWindow.TestOutputHelper);
         });
-
-        MainWindow.SetCards(this.CardData.Select(cardData => cardData.Card).ToList()!);
     }
     
     /// <summary>
@@ -85,24 +93,24 @@ internal sealed partial class YuGiOhFandom
         
         var currentCard = 0;
         var cardCount = this.CardData.Count;
+        var imagePasscodes = Structure.GetFilePaths(Folder.Images, Extension.jpg).Select(Path.GetFileNameWithoutExtension).ToArray();
         
-        await Parallel.ForEachAsync(this.CardData, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, async (card, token) => // TODO: Use cancellation token
+        await Parallel.ForEachAsync(this.CardData, async (card, token) => // TODO: Use cancellation token
         {
-            if (!card.CardImageEndpoint.IsNullEmptyOrWhitespace())
+            // TODO: Only check this un update, must be overridden when doing a normal download
+            if (!card.ImageEndpoint.IsNullEmptyOrWhitespace() && imagePasscodes.All(imagePasscode => imagePasscode != card.Passcode.ToString()))
             {
-                var image = await WebClient.DownloadImage(ImageBaseUri + card.CardImageEndpoint, ImageCodecInfo, EncoderParameters);
+                var image = await WebClient.DownloadImage(ImageBaseUri + card.ImageEndpoint, ImageCodecInfo, EncoderParameters);
 
                 if (image != null)
                 {
-                    var filePath = Structure.BuildPath(this.imagesFolder, card.Passcode.ToString()!, Extension.jpg);
-
-                    await using var fileStream = File.Open(filePath, FileMode.OpenOrCreate);
+                    await using var fileStream = Structure.OpenStream(this.imagesFolder, card.Passcode.ToString()!, Extension.jpg, FileMode.Create);
                     
                     image.Object.Save(fileStream, ImageCodecInfo, EncoderParameters);
                 }
             }
             
-            Output.Print("Downloading Image:", ++currentCard, cardCount, card.CardImageEndpoint ?? "MISSING", MainWindow.TestOutputHelper);
+            Output.Print("Downloading Image:", ++currentCard, cardCount, card.ImageEndpoint ?? string.Empty, MainWindow.TestOutputHelper);
         });
     }
     
@@ -117,8 +125,8 @@ internal sealed partial class YuGiOhFandom
         data.Card = new Monster
         (
             Localized: localized,
-            Endpoint: data.CardEndpoint,
-            ImageEndpoint: data.CardImageEndpoint ?? "MISSING",
+            Endpoint: data.Endpoint,
+            ImageEndpoint: data.ImageEndpoint ?? string.Empty,
             Passcode: data.Passcode!.Value,
             Rarities: data.Rarities,
             Statuses: data.Statuses,
@@ -145,8 +153,8 @@ internal sealed partial class YuGiOhFandom
         data.Card = new Spell
         (
             Localized: localized,
-            Endpoint: data.CardEndpoint,
-            ImageEndpoint: data.CardImageEndpoint ?? "MISSING",
+            Endpoint: data.Endpoint,
+            ImageEndpoint: data.ImageEndpoint ?? string.Empty,
             Passcode: data.Passcode!.Value,
             Rarities: data.Rarities,
             Statuses: data.Statuses,
@@ -167,8 +175,8 @@ internal sealed partial class YuGiOhFandom
         data.Card = new Trap
         (
             Localized: localized,
-            Endpoint: data.CardEndpoint,
-            ImageEndpoint: data.CardImageEndpoint ?? "MISSING",
+            Endpoint: data.Endpoint,
+            ImageEndpoint: data.ImageEndpoint ?? string.Empty,
             Passcode: data.Passcode!.Value,
             Rarities: data.Rarities,
             Statuses: data.Statuses,

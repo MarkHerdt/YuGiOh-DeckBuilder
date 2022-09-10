@@ -7,23 +7,27 @@
 internal enum Status
 {
     /// <summary>
+    /// https://yugioh.fandom.com/wiki/Not_yet_released
+    /// </summary>
+    NotYetReleased,
+    /// <summary>
     /// https://yugioh.fandom.com/wiki/Unlimited
     /// </summary>
-    Unlimited = 1,
+    Unlimited,
     /// <summary>
     /// https://yugioh.fandom.com/wiki/Semi-Limited
     /// </summary>
-    SemiLimited = 2,
+    SemiLimited,
     /// <summary>
     /// https://yugioh.fandom.com/wiki/Limited
     /// </summary>
-    Limited = 3,
+    Limited,
     /// <summary>
     /// https://yugioh.fandom.com/wiki/Forbidden
     /// </summary>
-    Forbidden = 4,
+    Forbidden,
     /// <summary>
     /// https://yugioh.fandom.com/wiki/Illegal
     /// </summary>
-    Illegal = 5,
+    Illegal,
 }

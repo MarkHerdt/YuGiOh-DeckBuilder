@@ -28,6 +28,9 @@
     <None Remove="Resources\Settings_Icon.png" />
     <None Remove="Resources\Sort-Ascending_Icon.png" />
     <None Remove="Resources\Sort-Descending_Icon.png" />
+    <None Update="YuGiOh\Data\Packs\MissingPacks.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
   <ItemGroup>
@@ -44,7 +47,6 @@
     <Folder Include="YuGiOh\Data\Cards" />
     <Folder Include="YuGiOh\Data\Export" />
     <Folder Include="YuGiOh\Data\Localization" />
-    <Folder Include="YuGiOh\Data\Packs" />
   </ItemGroup>
 
   <ItemGroup>

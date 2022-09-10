@@ -24,10 +24,16 @@ internal static class Log
     {
         "Card Endpoint Error | Dawn_of_Majesty_%2B1_Bonus_Pack | <td>\"<span class=\"new\" title=\"Live☆Twin Trouble-Sun (page does not exist)\" data-uncrawlable-url=\"L3dpa2kvTGl2ZSVFMiU5OCU4NlR3aW5fVHJvdWJsZS1TdW4/YWN0aW9uPWVkaXQmcmVkbGluaz0x\">Live☆Twin Trouble-Sun</span>\"</td>",
         "Card Endpoint Error | Photon_Hypernova | <td></td>",
+        "Card Endpoint Error | Speed_Duel:_Trials_of_the_Kingdom | <td>\"<span class=\"new\" title=\"Dino Destruction (Skill Card) (page does not exist)\" data-uncrawlable-url=\"L3dpa2kvRGlub19EZXN0cnVjdGlvbl8oU2tpbGxfQ2FyZCk/YWN0aW9uPWVkaXQmcmVkbGluaz0x\">Dino Destruction</span>\"</td>",
+        "Card Endpoint Error | Speed_Duel:_Trials_of_the_Kingdom | <td>\"<span class=\"new\" title=\"Switcheroo (Skill Card) (page does not exist)\" data-uncrawlable-url=\"L3dpa2kvU3dpdGNoZXJvb18oU2tpbGxfQ2FyZCk/YWN0aW9uPWVkaXQmcmVkbGluaz0x\">Switcheroo</span>\"</td>",
+        "Card Rarity Error | King%27s_Court | <td></td>",
+        "Card Rarity Error | Photon_Hypernova | <td></td>",
         "Card Table Match Error | Photon_Hypernova_%2B1_Bonus_Pack | False",
         "Card Table Match Error | Cyberstorm_Access | False",
         "Card Table Match Error | Cyberstorm_Access_%2B1_Bonus_Pack | False",
+        "Description Error |  | 0",
         "Http Request Error | https://static.wikia.nocookie.net/yugioh/images/MISSING | Response status code does not indicate success: 404 (Not Found).",
+        "Image Error |  | null",
         "Image Error | Alien_Stealthbuster | null",
         "Image Error | Double_Disrupter_Dragon | null",
         "Image Error | Geminize_Lord_Golknight | null",
@@ -38,7 +44,8 @@ internal static class Log
         "Image Error | Mimicking_Man-Eater_Bug | null",
         "Image Error | Outstanding_Dog_Mary | null",
         "Image Error | Stained_Glass_of_Light_and_Dark | null",
-        "Image Error | Undaunted_Bumpkin_Beast | null"
+        "Image Error | Undaunted_Bumpkin_Beast | null",
+        "Name Error |  | 0"
     };
 
     /// <summary>

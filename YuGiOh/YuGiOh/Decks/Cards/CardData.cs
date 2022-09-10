@@ -9,9 +9,9 @@ namespace YuGiOh_DeckBuilder.YuGiOh.Decks.Cards;
 /// <summary>
 /// Contains all data for a card to be created
 /// </summary>
-/// <param name="CardEndpoint">Endpoint for the card</param>
+/// <param name="Endpoint">Endpoint for the card</param>
 /// <param name="Rarities">Rarities for this card</param>
-internal sealed record CardData(string CardEndpoint, IEnumerable<Rarity> Rarities)
+internal sealed record CardData(string Endpoint, IEnumerable<Rarity> Rarities)
 {
     #region Properties
     /// <summary>
@@ -22,7 +22,7 @@ internal sealed record CardData(string CardEndpoint, IEnumerable<Rarity> Raritie
     /// <summary>
     /// Endpoint for the card
     /// </summary>
-    internal string CardEndpoint { get; } = CardEndpoint;
+    internal string Endpoint { get; } = Endpoint;
 
     /// <summary>
     /// Rarities for this card
@@ -62,7 +62,7 @@ internal sealed record CardData(string CardEndpoint, IEnumerable<Rarity> Raritie
     /// <summary>
     /// Uri for the <see cref="Image"/> of a card
     /// </summary>
-    internal string? CardImageEndpoint { get; set; }
+    internal string? ImageEndpoint { get; set; }
     
     /// <summary>
     /// Every <see cref="Enums.LinkArrow"/> of a link <see cref="Monster"/>
@@ -111,13 +111,13 @@ internal sealed record CardData(string CardEndpoint, IEnumerable<Rarity> Raritie
     internal int? Defense { get; set; }
 
     /// <summary>
+    /// Indicates, the row containing the passcode, has been reached
+    /// </summary>
+    internal bool PasscodeReached { get; set; }
+    /// <summary>
     /// Passcode of a card
     /// </summary>
     internal int? Passcode { get; set; }
-    /// <summary>
-    /// Indicates, that this passcode has already been found
-    /// </summary>
-    internal bool DuplicatePasscode { get; set; }
 
     /// <summary>
     /// Every <see cref="Enums.Status"/> of a card

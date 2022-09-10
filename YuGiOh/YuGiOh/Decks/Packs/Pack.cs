@@ -10,9 +10,9 @@ namespace YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
 /// </summary>
 /// <param name="Name">The name of the pack</param>
 /// <param name="ReleaseDate">The date, this pack was released</param>
-/// <param name="EndPoint">Endpoint for this pack on https://yugioh.fandom.com/wiki/</param>
+/// <param name="Endpoint">Endpoint for this pack on https://yugioh.fandom.com/wiki/</param>
 /// <param name="Cards">Endpoints and rarities of all cards in this <see cref="Pack"/></param>
-internal sealed record Pack(string Name, DateTime ReleaseDate, string EndPoint, ICollection<Card> Cards)
+internal sealed record Pack(string Name, DateTime ReleaseDate, string Endpoint, ICollection<Card> Cards)
 {
     #region Properties
     /// <summary>
@@ -26,7 +26,7 @@ internal sealed record Pack(string Name, DateTime ReleaseDate, string EndPoint, 
     /// <summary>
     /// Endpoint for this pack on https://yugioh.fandom.com/wiki/
     /// </summary>
-    public string EndPoint { get; } = EndPoint;
+    public string Endpoint { get; } = Endpoint;
     /// <summary>
     /// Endpoints and rarities of all cards in this <see cref="Pack"/>
     /// </summary>
@@ -40,7 +40,7 @@ internal sealed record Pack(string Name, DateTime ReleaseDate, string EndPoint, 
         return  "{\n" +
                $"  \"{nameof(this.Name)}\": \"{this.Name}\"\n" +
                $"  \"{nameof(this.ReleaseDate)}\": \"{this.ReleaseDate}\"\n" +
-               $"  \"{nameof(this.EndPoint)}\": \"{this.EndPoint}\"\n" +
+               $"  \"{nameof(this.Endpoint)}\": \"{this.Endpoint}\"\n" +
                $"  \"{nameof(this.Cards)}\": [ " + "{\n" +
                $"  {string.Join("\n  }, {\n", this.Cards.Select(card => card.ToString()))}\n" +
                 "    } ]\n" +

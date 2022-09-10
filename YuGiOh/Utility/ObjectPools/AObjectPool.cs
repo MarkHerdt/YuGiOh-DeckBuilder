@@ -34,11 +34,14 @@ internal abstract class AObjectPool<T> where T : new()
     /// <returns><see cref="PoolItem{T}"/></returns>
     internal PoolItem<T> GetObject()
     {
-        if (this.pool.TryDequeue(out var item))
+        lock (pool)
         {
-            return item;
+            if (this.pool.TryDequeue(out var item))
+            {
+                return item;
+            }
         }
-
+        
         return new PoolItem<T>(this, new T());
     }
     
@@ -48,7 +51,10 @@ internal abstract class AObjectPool<T> where T : new()
     /// <param name="poolItem">The item to enqueue to <see cref="pool"/></param>
     internal virtual void ReturnItem(PoolItem<T> poolItem)
     {
-        this.pool.Enqueue(poolItem);
+        lock (pool)
+        {
+            this.pool.Enqueue(poolItem);   
+        }
     }
 
     /// <summary>
@@ -57,7 +63,10 @@ internal abstract class AObjectPool<T> where T : new()
     /// <returns>The number of items in <see cref="pool"/></returns>
     internal int GetPoolCount()
     {
-        return this.pool.Count;
+        lock (pool)
+        {
+            return this.pool.Count;
+        }
     }
     #endregion
 }

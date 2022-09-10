@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -21,7 +22,7 @@ internal static class Json
     {
         Formatting = Formatting.Indented,
         Culture = CultureInfo.InvariantCulture,
-        //StringEscapeHandling = StringEscapeHandling.EscapeHtml
+        //StringEscapeHandling = StringEscapeHandling.EscapeHtml // TODO: Maybe needed for card descriptions
     };
     #endregion
     
@@ -34,6 +35,8 @@ internal static class Json
     /// <param name="object">The <see cref="object"/> to serialize to tge given <see cref="Stream"/></param>
     internal static async Task SerializeAsync(Folder folder, string fileName, object @object)
     {
+        fileName = Structure.ReplaceForbiddenFileNameCharacters(fileName);
+        
         await using var fileStream = Structure.OpenStream(folder, fileName, Extension.json, FileMode.Create);
         await using var streamWriter = new StreamWriter(fileStream, Encoding.UTF8);
         using var customJsonWriter = new CustomJsonWriter(streamWriter);
@@ -68,6 +71,27 @@ internal static class Json
         using var jsonTextReader = new JsonTextReader(streamReader);
         
         return jsonSerializer.Deserialize<T>(jsonTextReader);
+    }
+    
+    /// <summary>
+    /// Deserializes the files at the given paths
+    /// </summary>
+    /// <param name="filePaths">Filepaths of the files to deserialize</param>
+    /// <typeparam name="T">The <see cref="Type"/> to deserialize to</typeparam>
+    /// <returns>A list of object of the given <see cref="Type"/></returns>
+    internal static async Task<List<T>> DeserializeAsync<T>(IEnumerable<string> filePaths)
+    {
+        var deserializedObjects = new List<T>();
+        
+        foreach (var filePath in filePaths)
+        {
+            if (await DeserializeAsync<T>(filePath) is { } deserializedObject)
+            {
+                deserializedObjects.Add(deserializedObject);
+            }
+        }
+
+        return deserializedObjects;
     }
     #endregion
 }

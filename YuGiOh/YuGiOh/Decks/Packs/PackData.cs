@@ -8,14 +8,14 @@ namespace YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
 /// <summary>
 /// Contains all data for a pack to be created
 /// </summary>
-/// <param name="PackEndpoint">Endpoint of this pack</param>
-internal sealed record PackData(string PackEndpoint)
+/// <param name="Endpoint">Endpoint of this pack</param>
+internal sealed record PackData(string Endpoint)
 {
     #region Properties
     /// <summary>
     /// Endpoint of this pack
     /// </summary>
-    internal string PackEndpoint { get; } = PackEndpoint;
+    internal string Endpoint { get; } = Endpoint;
     /// <summary>
     /// <see cref="PoolItem{T}"/> containing a <see cref="System.Text.StringBuilder"/>
     /// </summary>
@@ -24,7 +24,7 @@ internal sealed record PackData(string PackEndpoint)
     /// <summary>
     /// Name of this booster pack
     /// </summary>
-    internal string? PackName { get; set; }
+    internal string? Name { get; set; }
     /// <summary>
     /// Date when this booster pack was released
     /// </summary>
@@ -42,6 +42,6 @@ internal sealed record PackData(string PackEndpoint)
     /// <summary>
     /// Endpoints and rarities of all cards in this <see cref="Pack"/>
     /// </summary>
-    internal List<Card> Cards { get; } = new();
+    internal List<Card> Cards { get; init; } = new();
     #endregion
 };

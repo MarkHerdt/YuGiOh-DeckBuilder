@@ -54,7 +54,7 @@ public partial class MainWindow : INotifyPropertyChanged
     internal static ReadOnlyCollection<Pack>? Packs
     {
         get => packs;
-        set
+        private set
         {
             packs = new ReadOnlyCollection<Pack>(value!.Where(pack => pack.ReleaseDate != default).OrderBy(pack => pack.ReleaseDate).ToList());
 

@@ -45,6 +45,54 @@ namespace YuGiOh_DeckBuilder
             ConsoleAllocator.Kill();
         }
 
+#if DEBUG
+        /// <summary>
+        /// For testing
+        /// </summary>
+        /// <param name="sender"><see cref="object"/> from which this method is called</param>
+        /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
+        private async void Button_Test_OnClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var ygo = new YuGiOhFandom();
+            
+            await ygo.DeserializePackCardsAsync();
+
+            foreach (var card in ygo.DeserializedCards)
+            {
+                if (card.Rarities == null)
+                {
+                    Console.WriteLine(card.Endpoint);
+                }
+            }
+            
+            // foreach (var pack in ygo.DeserializedPacks)
+            // {
+            //     if (pack.Cards.Any(card => card.EndPoint is "Mokey_Mokey_King"))
+            //     {
+            //         Console.WriteLine($"{pack.EndPoint} | Mokey_Mokey_King");
+            //     }
+            //     if (pack.Cards.Any(card => card.EndPoint is "Ghoti_of_the_Deep_Beyond"))
+            //     {
+            //         Console.WriteLine($"{pack.EndPoint} | Ghoti_of_the_Deep_Beyond");
+            //     }
+            //     if (pack.Cards.Any(card => card.EndPoint is "Spright_Gamma_Burst"))
+            //     {
+            //         Console.WriteLine($"{pack.EndPoint} | Spright_Gamma_Burst");
+            //     }
+            //     if (pack.Cards.Any(card => card.EndPoint is "Morphtronic_Scannen"))
+            //     {
+            //         Console.WriteLine($"{pack.EndPoint} | Morphtronic_Scannen");
+            //     }
+            //     if (pack.Cards.Any(card => card.EndPoint is "Tailwind_of_Gusto"))
+            //     {
+            //         Console.WriteLine($"{pack.EndPoint} | Tailwind_of_Gusto");
+            //     }
+            // }
+            
+            Console.WriteLine("Finished");
+        }
+#endif
+        
         /// <summary>
         /// Shows/hides the console
         /// </summary>
@@ -71,11 +119,12 @@ namespace YuGiOh_DeckBuilder
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
         private async void Button_Download_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
+            this.Reset();
             var yuGiOhFandom = new YuGiOhFandom();
 
             await yuGiOhFandom.DownloadData();
             
-            this.IndexCards();
+            //await this.IndexCards();
             
             Console.WriteLine("\nFinished Downloading\n");
             
@@ -96,11 +145,12 @@ namespace YuGiOh_DeckBuilder
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
         private async void Button_UpdateCards_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
+            this.Reset();
             var yuGiOhFandom = new YuGiOhFandom();
 
             await yuGiOhFandom.UpdateData();
             
-            this.IndexCards();
+            //await this.IndexCards();
             
             Console.WriteLine("\nFinished Downloading\n");
             
@@ -121,11 +171,8 @@ namespace YuGiOh_DeckBuilder
         /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
         private async void Button_LoadCards_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            // TODO: Call these on program start
-            await this.LoadPacks();
-            await this.LoadCards();
-            
-            this.IndexCards();
+            // TODO: Call this on program start
+            await this.IndexCards();
         }
         
         /// <summary>

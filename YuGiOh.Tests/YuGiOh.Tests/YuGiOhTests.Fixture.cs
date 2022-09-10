@@ -58,7 +58,7 @@ public sealed partial class YuGiOhTests
         {
             pack = new PackData(packEndpoint)
             {
-                PackName = Regex.Replace(packEndpoint, @"[^a-zA-Z0-9]", " "),
+                Name = Regex.Replace(packEndpoint, @"[^a-zA-Z0-9]", " "),
                 ReleaseDate = DateTime.Now
             };
         }
@@ -69,7 +69,7 @@ public sealed partial class YuGiOhTests
 
             pack = new PackData(endPoint)
             {
-                PackName = Regex.Replace(endPoint, @"[_]", " "),
+                Name = Regex.Replace(endPoint, @"[_]", " "),
                 ReleaseDate = DateTime.Now,
                 Cards = { new Card(cardEndpoint, new List<Rarity>()) }
             };
@@ -97,7 +97,7 @@ public sealed partial class YuGiOhTests
             }
             else
             {
-                if (MainWindow.Packs?.SelectMany(pack => pack.Cards).FirstOrDefault(card => string.Equals(card.EndPoint, cardEndpoint))?.Passcode is { } passcode)
+                if (MainWindow.Packs?.SelectMany(pack => pack.Cards).FirstOrDefault(card => string.Equals(card.Endpoint, cardEndpoint))?.Passcode is { } passcode)
                 {
                     var card = (await Json.DeserializeAsync<ACard>(Folder.Cards_TEST, passcode.ToString()))!;
                 

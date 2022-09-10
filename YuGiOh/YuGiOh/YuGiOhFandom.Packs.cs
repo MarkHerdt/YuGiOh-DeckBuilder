@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YuGiOh_DeckBuilder.Extensions;
+using YuGiOh_DeckBuilder.Utility.Project;
 using YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
 using YuGiOh_DeckBuilder.YuGiOh.Enums;
 using YuGiOh_DeckBuilder.YuGiOh.Enums.Utility;
@@ -147,6 +149,7 @@ internal sealed partial class YuGiOhFandom
             "Legendary_Duelists:_White_Dragon_Abyss",
             "Legendary_Duelists",
             "Millennium_Pack",
+            "Movie_Pack",
             "Mystic_Fighters",
             "Number_Hunters",
             "Pendulum_Evolution",
@@ -171,7 +174,6 @@ internal sealed partial class YuGiOhFandom
             "The_Infinity_Chasers",
             "The_New_Challengers",
             "The_Secret_Forces",
-            "The_World%E2%80%99s_Greatest_Fisherman",
             "Toon_Chaos",
             "War_of_the_Giants:_Round_2",
             "Wing_Raiders",
@@ -190,7 +192,7 @@ internal sealed partial class YuGiOhFandom
     /// </summary>
     /// <param name="packEndpoint">Only downloads the pack with this endpoint</param>
     /// <param name="cardEndpoint">Only downloads the card with this endpoint</param>
-    private async Task GetAllPacksAsync(string packEndpoint = "", string cardEndpoint = "")
+    internal async Task GetAllPacksAsync(string packEndpoint = "", string cardEndpoint = "")
     {
         if (packEndpoint.IsNullEmptyOrWhitespace() && cardEndpoint.IsNullEmptyOrWhitespace())
         {
@@ -218,11 +220,13 @@ internal sealed partial class YuGiOhFandom
 
         foreach (var missingPackEndpoint in missingPackEndpoints)
         {
-            if (this.PackData.All(pack => pack.PackEndpoint != missingPackEndpoint))
+            if (this.PackData.All(pack => pack.Endpoint != missingPackEndpoint))
             {
                 this.PackData.Add(new PackData(missingPackEndpoint));
             }
         }
+        
+        this.PackData.AddRange(await this.GetMissingPacks());
         
         if (!stopCondition)
         {
@@ -252,6 +256,19 @@ internal sealed partial class YuGiOhFandom
     }
 
     /// <summary>
+    /// Gets all packs from <see cref="FileName.MissingPacks"/>
+    /// </summary>
+    /// <returns>A <see cref="List{T}"/> of <see cref="PackData"/> with the pack endpoints from <see cref="FileName.MissingPacks"/></returns>
+    private async Task<List<PackData>> GetMissingPacks()
+    {
+        var regex = new Regex($@"^{BaseUri}[^/\s]+$");
+        var filePath = Structure.BuildPath(FileName.MissingPacks);
+        var lines = await File.ReadAllLinesAsync(filePath);
+        
+        return lines.Where(line => regex.IsMatch(line)).Select(line => new PackData(line.Replace(BaseUri, string.Empty))).ToList();
+    }
+    
+    /// <summary>
     /// Asynchronously gets the data of all booster packs in <see cref="MainWindow.Packs"/> 
     /// </summary>
     private async Task GetBoosterPacksDataAsync()
@@ -259,9 +276,9 @@ internal sealed partial class YuGiOhFandom
         var currentPack = 0;
         var packCount = this.PackData.Count;
 
-        await Parallel.ForEachAsync(this.PackData, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, async (packData, token) => // TODO: Use cancellation token
+        await Parallel.ForEachAsync(this.PackData, async (packData, token) => // TODO: Use cancellation token
         {
-            var response = await WebClient.ReadWebsiteAsStreamAsync(BaseUri + packData.PackEndpoint, line =>
+            var response = await WebClient.ReadWebsiteAsStreamAsync(BaseUri + packData.Endpoint, line =>
             {
                 this.GetBoosterPackName(line, packData);
                 this.GetReleaseDate(line, packData);
@@ -277,7 +294,26 @@ internal sealed partial class YuGiOhFandom
 
             SKIP_PACK:;
             
-            Output.Print("Downloading pack data:", ++currentPack, packCount, packData.PackEndpoint, MainWindow.TestOutputHelper);
+            Output.Print("Getting pack data:", ++currentPack, packCount, packData.Endpoint, MainWindow.TestOutputHelper);
+        });
+
+        await Parallel.ForEachAsync(this.PackData.AsParallel().SelectMany(packData => packData.Cards).GroupBy(card => card.Endpoint), (grouping, token) => // TODO: Use cancellation token
+        {
+            var rarities = new List<Rarity>();
+            
+            foreach (var card in grouping)
+            {
+                rarities.AddRange(card.Rarities);
+            }
+
+            rarities = rarities.Distinct().ToList();
+            
+            foreach (var card in grouping)
+            {
+                card.Rarities = new List<Rarity>(rarities);
+            }
+            
+            return ValueTask.CompletedTask;
         });
         
         Output.PrintSkip(this.PackData.Count, this.PackData.Count, Log.SkippedPacks, MainWindow.TestOutputHelper);
@@ -290,7 +326,7 @@ internal sealed partial class YuGiOhFandom
     /// <param name="packData">Contains all data of a pack</param>
     private void GetBoosterPackName(string line, PackData packData)
     {
-        if (packData.PackName != null) return;
+        if (packData.Name != null) return;
         
         var packNameMatch = this.packNameRegex.Match(line);
 
@@ -299,7 +335,7 @@ internal sealed partial class YuGiOhFandom
             var startIndex = packNameMatch.Value.IndexOf('>') + 1;
             var length = packNameMatch.Value.LastIndexOf('<') - startIndex;
 
-            packData.PackName = packNameMatch.Value.Substring(startIndex, length);
+            packData.Name = packNameMatch.Value.Substring(startIndex, length);
         }
     }
 
@@ -357,7 +393,7 @@ internal sealed partial class YuGiOhFandom
             {
                 packData.StopSearch = true;
                 
-                this.GetCard(packData.PackEndpoint, singleLineMatch.Value, packData);
+                this.GetCard(packData.Endpoint, singleLineMatch.Value, packData);
             }
             // For tables with multiple lines
             else
@@ -368,7 +404,7 @@ internal sealed partial class YuGiOhFandom
                 {
                     packData.StopSearch = true;
                     
-                    this.GetCard(packData.PackEndpoint, packData.StringBuilder.Item.ToString(), packData);
+                    this.GetCard(packData.Endpoint, packData.StringBuilder.Item.ToString(), packData);
                     
                     packData.StringBuilder.Return();
                 }
@@ -412,10 +448,7 @@ internal sealed partial class YuGiOhFandom
                         
                         cardEndpoint = nameColumn.Substring(endPointStart, endPointLength);
                     }
-                    catch
-                    {
-                        Log.Error(Error.CardEndpointError, currentEndpoint, cardColumnMatches[nameColumnNumber].Value);
-                    }
+                    catch { /* Ignored */ }
 
                     try
                     {
@@ -435,14 +468,23 @@ internal sealed partial class YuGiOhFandom
                             }
                         }
                     }
-                    catch
-                    {
-                        Log.Error(Error.CardRarityError, currentEndpoint, cardColumnMatches[rarityColumnNumber].Value);
-                    }
+                    catch { /* Ignored */ }
 
-                    if (cardEndpoint != string.Empty && rarities.Any())
+                    if (cardEndpoint != string.Empty)
                     {
-                        packData.Cards.Add(new Card(cardEndpoint, rarities));
+                        if (rarities.Any())
+                        {
+                            packData.Cards.Add(new Card(cardEndpoint, rarities));  
+                        }
+                        else
+                        {
+                            packData.Cards.Add(new Card(cardEndpoint, new List<Rarity>()));  
+                            Log.Error(Error.CardRarityError, currentEndpoint, cardColumnMatches[rarityColumnNumber].Value);
+                        }
+                    }
+                    else
+                    {
+                        Log.Error(Error.CardEndpointError, currentEndpoint, cardColumnMatches[nameColumnNumber].Value);
                     }
                 }
                 else
@@ -489,24 +531,23 @@ internal sealed partial class YuGiOhFandom
     {
         if (response == HttpStatusCode.BadRequest)
         {
-            Log.SkipPack(Skip.BadRequest, packData.PackEndpoint);
-            
-            return  true;
+            Log.SkipPack(Skip.BadRequest, packData.Endpoint); // TODO: Print/Log skipped packs
+            return true;
         }
         
-        if (packData.PackName == null)
+        if (packData.Name == null)
         {
-            Log.Error(Error.PackNameError, packData.PackEndpoint, "null");
+            Log.Error(Error.PackNameError, packData.Endpoint, "null");
         }
         
         if (packData.ReleaseDate == null)
         {
-            Log.Error(Error.PackReleaseDateError, packData.PackEndpoint, "null");
+            Log.Error(Error.PackReleaseDateError, packData.Endpoint, "null");
         }
 
         if (!packData.StopSearch)
         {
-            Log.Error(Error.CardTableMatchError, packData.PackEndpoint, packData.StopSearch.ToString());
+            Log.Error(Error.CardTableMatchError, packData.Endpoint, packData.StopSearch.ToString());
         }
 
         return false;

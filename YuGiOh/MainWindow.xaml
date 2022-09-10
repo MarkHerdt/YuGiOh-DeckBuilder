@@ -9,7 +9,7 @@
         xmlns:wpf="clr-namespace:YuGiOh_DeckBuilder.WPF">
 
     <Grid>
-        
+
         <Grid.Resources>
             <Image x:Key="Search_Icon" Source="Resources/Search_Icon.png" />
             <Image x:Key="Settings_Icon" Source="Resources/Settings_Icon.png" />
@@ -29,9 +29,12 @@
                     </Grid.Resources>
                     <Button Content="Download Cards" Click="Button_Download_OnClick" Margin="10,10,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
                     <Button Content="Update Cards" Click="Button_UpdateCards_OnClick" Margin="10,95,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
-                    <Button Content="Load Cards" Click="Button_LoadCards_OnClick" Height="50" Margin="150,10,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
+                    <Button Content="Load Cards" Click="Button_LoadCards_OnClick" Margin="150,10,0,0" Style="{StaticResource Button}" HorizontalAlignment="Left" />
                     <Button x:Name="Button_UpdateApp" Content="Update App" IsEnabled="{Binding Path=(ygo:App.UpdatesAvailable), IsAsync=True}" Click="Button_UpdateApp_OnClick"
                             Margin="0,10,10,0" Style="{StaticResource Button}" HorizontalAlignment="Right" Background="GreenYellow" />
+                    
+                    <Button x:Name="Button_Test" Content="Test" Visibility="Collapsed" Click="Button_Test_OnClick" Style="{StaticResource Button}" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+
                 </Grid>
             </TabItem>
             <TabItem Header="Deck Builder">
@@ -125,7 +128,7 @@
 
                             <TextBlock x:Name="TextBlock_CardCount" HorizontalAlignment="Center" VerticalAlignment="Center" Text="0" FontWeight="Medium" />
                         </StackPanel>
-
+                        
                         <wpf:CardListView x:Name="ListView_Cards" ItemsSource="{Binding Path=(ygo:MainWindow.CardsListView), IsAsync=True}" 
                                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10,40,10,10" RenderTransformOrigin="0.5,0.5">
                             <ListView.ItemsPanel>

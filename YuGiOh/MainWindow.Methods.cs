@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using YuGiOh_DeckBuilder.Extensions;
 using YuGiOh_DeckBuilder.Utility.Json;
 using YuGiOh_DeckBuilder.Utility.Project;
@@ -27,6 +28,10 @@ public partial class MainWindow
     /// </summary>
     private void Init()
     {
+#if DEBUG
+        this.Button_Test.Visibility = Visibility.Visible;
+#endif
+        
         Instance = this;
 
         this.settingsWindow = new FilterSettingsWindow(filterSettings);
@@ -43,6 +48,24 @@ public partial class MainWindow
 
         this.Image_Selected.Source = CardImage.CardBack;
     }
+
+    /// <summary>
+    /// Empties: <br/>
+    /// <i><see cref="ExtraDeckListView"/></i> <br/>
+    /// <i><see cref="DeckListView"/></i> <br/>
+    /// <i><see cref="CardsListView"/></i> <br/>
+    /// <i><see cref="Cards"/></i> <br/>
+    /// <i><see cref="Packs"/></i>
+    /// </summary>
+    private void Reset()
+    {
+        this.ExtraDeckListView = new List<CardImage>();
+        this.DeckListView = new List<CardImage>();
+        this.CardsListView = new List<CardImage>();
+
+        SetCards(new List<ACard>());
+        Packs = new ReadOnlyCollection<Pack>(new List<Pack>());
+    }
     
     /// <summary>
     /// Loads all <see cref="Folder.Packs"/>
@@ -53,13 +76,11 @@ public partial class MainWindow
         
         var concurrentBag = new ConcurrentBag<Pack>();
         var directoryPath = Structure.BuildPath(Folder.Packs);
-        var filesPaths = Directory.GetFiles(directoryPath);
+        var filesPaths = Directory.GetFiles(directoryPath, "*.json");
 
         await Parallel.ForEachAsync(filesPaths, async (filePath, token) => // TODO: Use cancellation token
         {
-            var pack = await Json.DeserializeAsync<Pack>(filePath);
-
-            if (pack != null)
+            if (await Json.DeserializeAsync<Pack>(filePath) is { } pack)
             {
                 concurrentBag.Add(pack);
             }
@@ -129,8 +150,11 @@ public partial class MainWindow
     /// <summary>
     /// Sets the necessary index references for all <see cref="Cards"/>
     /// </summary>
-    private void IndexCards()
+    private async Task IndexCards()
     {
+        await this.LoadPacks();
+        await this.LoadCards();
+        
         var backgroundWorker = new BackgroundWorker();
             
         backgroundWorker.DoWork += IndexCards;

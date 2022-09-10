@@ -7,15 +7,15 @@ namespace YuGiOh_DeckBuilder.YuGiOh.Decks.Packs;
 /// <summary>
 /// Represents one card in a <see cref="Pack"/>
 /// </summary>
-/// <param name="EndPoint">Endpoint for this card</param>
+/// <param name="Endpoint">Endpoint for this card</param>
 /// <param name="Rarities">Rarities for this card</param>
-internal sealed record Card(string EndPoint, IEnumerable<Rarity> Rarities)
+internal sealed record Card(string Endpoint, IEnumerable<Rarity> Rarities)
 {
     #region Properties
     /// <summary>
     /// Endpoint for this card
     /// </summary>
-    public string EndPoint { get; } = EndPoint;
+    public string Endpoint { get; } = Endpoint;
     /// <summary>
     /// 8-digit unique id
     /// </summary>
@@ -24,7 +24,12 @@ internal sealed record Card(string EndPoint, IEnumerable<Rarity> Rarities)
     /// Rarities for this card
     /// </summary>
     [JsonIgnore]
-    internal IEnumerable<Rarity> Rarities { get; } = Rarities;
+    internal IEnumerable<Rarity> Rarities { get; set; } = Rarities;
+    /// <summary>
+    /// Indicates whether this card should be skipped during a card update
+    /// </summary>
+    [JsonIgnore]
+    internal bool Skip { get; set; }
     /// <summary>
     /// Index of this card in <see cref="MainWindow.CardImages"/> 
     /// </summary>
@@ -35,7 +40,7 @@ internal sealed record Card(string EndPoint, IEnumerable<Rarity> Rarities)
     #region Methods
     public override string ToString()
     {
-        return $"    \"{nameof(this.EndPoint)}\": \"{this.EndPoint}\",\n" +
+        return $"    \"{nameof(this.Endpoint)}\": \"{this.Endpoint}\",\n" +
                $"    \"{nameof(this.Passcode)}\": {this.Passcode}";
     }
     #endregion

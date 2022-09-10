@@ -39,7 +39,7 @@ public sealed partial class YuGiOhTests
     [Fact]
     public async Task DownloadWebsite()
     {
-        await WebClient.DownloadWebsiteAsync("Underground_Arachnid", Folder.Websites_TEST);
+        await WebClient.DownloadWebsiteAsync("Sinister_Serpent", Folder.Websites_TEST);
         
         Log.Errors.ToList().ForEach(this.console.WriteLine);
         Assert.Empty(Log.Errors);

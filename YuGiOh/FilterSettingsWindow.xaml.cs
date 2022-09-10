@@ -14,11 +14,10 @@ namespace YuGiOh_DeckBuilder;
 public partial class FilterSettingsWindow : Window
 {
     #region Constants
-    string test = DateTime.Now.ToString("yyyy MMMM dd");
     /// <summary>
     /// <see cref="string"/> formatting for every <see cref="DateTime"/> in <see cref="FilterSettingsWindow"/>
     /// </summary>
-    internal const string DateTimeFormat = "yyyy MMMM dd";
+    private const string dateTimeFormat = "yyyy MMMM dd";
     #endregion
     
     #region Members
@@ -69,7 +68,7 @@ public partial class FilterSettingsWindow : Window
         foreach (var pack in this.filterSettings.Packs) // TODO: Initialize once when packs are loaded
         {
             this.ReleaseDates.Add(pack.ReleaseDate);
-            this.ReleaseDateFormats.Add(pack.ReleaseDate.ToString(DateTimeFormat));
+            this.ReleaseDateFormats.Add(pack.ReleaseDate.ToString(dateTimeFormat));
         }
         
         this.ComboBox_DateStart.SelectedIndex = this.ReleaseDates.IndexOf(this.filterSettings.DateStart);

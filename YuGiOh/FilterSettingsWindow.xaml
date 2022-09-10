@@ -251,30 +251,74 @@
                         <ToggleButton Content="NR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[NR]}" />
                         <ToggleButton Content="SP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SP]}" />
                         <ToggleButton Content="SSP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SSP]}" />
+                        <ToggleButton Content="HFR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HFR]}" />
                         <ToggleButton Content="R" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[R]}" />
                         <ToggleButton Content="SR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SR]}" />
-                        <ToggleButton Content="HFR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HFR]}" />
                         <ToggleButton Content="UR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UR]}" />
+                        <ToggleButton Content="URPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[URPR]}" />
                         <ToggleButton Content="UtR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UtR]}" />
-                        <ToggleButton Content="ScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScR]}" />
-                        <ToggleButton Content="UScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UScR]}" />
-                        <ToggleButton Content="ScUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScUR]}" />
-                        <ToggleButton Content="PScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PScR]}" />
-                        <ToggleButton Content="HGR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HGR]}" />
                         <ToggleButton Content="GR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GR]}" />
+                        <ToggleButton Content="HGR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HGR]}" />
+                        <ToggleButton Content="PIR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PIR]}" />
+                        <ToggleButton Content="StR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[StR]}" />
+                        <ToggleButton Content="ScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScR]}" />
+                        <ToggleButton Content="PScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PScR]}" />
+                        <ToggleButton Content="EScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[EScR]}" />
+                        <ToggleButton Content="PlScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PlScR]}" />
+                        <ToggleButton Content="UScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UScR]}" />
+                        <ToggleButton Content="20ScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[_20ScR]}" />
+                        <ToggleButton Content="ScUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScUR]}" />
+                        <ToggleButton Content="10000ScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[_10000ScR]}" />
                         <ToggleButton Content="PR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PR]}" />
                         <ToggleButton Content="NPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[NPR]}" />
                         <ToggleButton Content="PC" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PC]}" />
                         <ToggleButton Content="SPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SPR]}" />
                         <ToggleButton Content="UPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UPR]}" />
+                        <ToggleButton Content="ScPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ScPR]}" />
+                        <ToggleButton Content="EScPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[EScPR]}" />
+                        <ToggleButton Content="SFR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SFR]}" />
+                        <ToggleButton Content="MSR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[MSR]}" />
+                        <ToggleButton Content="SHR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SHR]}" />
+                        <ToggleButton Content="CR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[CR]}" />
+                        <ToggleButton Content="HGPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[HGPR]}" />
+                        <ToggleButton Content="KCC" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[KCC]}" />
+                        <ToggleButton Content="KCR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[KCR]}" />
+                        <ToggleButton Content="KCUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[KCUR]}" />
+                        <ToggleButton Content="GUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GUR]}" />
+                        <ToggleButton Content="GScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GScR]}" />
+                        <ToggleButton Content="GGR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GGR]}" />
+                        <ToggleButton Content="PGR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[PGR]}" />
+                        <ToggleButton Content="MLR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[MLR]}" />
+                        <ToggleButton Content="MLSR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[MLSR]}" />
+                        <ToggleButton Content="MLUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[MLUR]}" />
+                        <ToggleButton Content="MLScR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[MLScR]}" />
+                        <ToggleButton Content="MLGR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[MLGR]}" />
                         <ToggleButton Content="DNPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DNPR]}" />
                         <ToggleButton Content="DPC" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DPC]}" />
+                        <ToggleButton Content="DNRPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DNRPR]}" />
                         <ToggleButton Content="DRPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DRPR]}" />
                         <ToggleButton Content="DSPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DSPR]}" />
                         <ToggleButton Content="DUPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DUPR]}" />
                         <ToggleButton Content="DScPR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DScPR]}" />
-                        <ToggleButton Content="GUR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GUR]}" />
-                        <ToggleButton Content="STR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[STR]}" />
+                        <ToggleButton Content="RR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[RR]}" />
+                        <ToggleButton Content="GRR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GRR]}" />
+                        <ToggleButton Content="ORR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[ORR]}" />
+                        <ToggleButton Content="SE" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[SE]}" />
+                        <ToggleButton Content="1E" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[_1E]}" />
+                        <ToggleButton Content="UE" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[UE]}" />
+                        <ToggleButton Content="LE" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[LE]}" />
+                        <ToggleButton Content="DT" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[DT]}" />
+                        <ToggleButton Content="FR" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[FR]}" />
+                        <ToggleButton Content="Vc" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[Vc]}" />
+                        <ToggleButton Content="OgP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[OgP]}" />
+                        <ToggleButton Content="RP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[RP]}" />
+                        <ToggleButton Content="Rp" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[Rp]}" />
+                        <ToggleButton Content="OoP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[OoP]}" />
+                        <ToggleButton Content="GC" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[GC]}" />
+                        <ToggleButton Content="OP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[OP]}" />
+                        <ToggleButton Content="CT" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[CT]}" />
+                        <ToggleButton Content="OSP" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[OSP]}" />
+                        <ToggleButton Content="BAM" Style="{StaticResource ToggleButton}" IsChecked="{Binding Rarities[BAM]}" />
                     </WrapPanel>
                 </Grid>
 

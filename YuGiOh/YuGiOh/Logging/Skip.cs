@@ -9,8 +9,4 @@ internal enum Skip
     /// Http 400 response
     /// </summary>
     BadRequest,
-    /// <summary>
-    /// Duplicate already found
-    /// </summary>
-    Duplicate
 }

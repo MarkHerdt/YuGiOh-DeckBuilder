@@ -29,4 +29,5 @@ internal enum Error
     StatusError,
     DescriptionError,
     StopConditionError,
+    PackCardPasscodeError
 }

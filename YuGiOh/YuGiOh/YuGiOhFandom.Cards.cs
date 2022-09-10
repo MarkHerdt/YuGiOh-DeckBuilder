@@ -74,9 +74,13 @@ internal sealed partial class YuGiOhFandom
     /// </summary>
     private readonly Regex propertyTypeRegex = new("<a href=\"/wiki/[a-zA-Z-]+_(Spell|Trap)_Card\" title=\"[a-zA-Z-]+ (Spell|Trap) Card\">[a-zA-Z-]+</a>");
     /// <summary>
+    /// <see cref="Regex"/> that indicates, the row containing the passcode, has been reached
+    /// </summary>
+    private readonly Regex passcodeReached = new("<tr class=\"cardtablerow\"><th class=\"cardtablerowheader\" scope=\"row\"><a href=\"/wiki/Passcode\" title=\"Passcode\">Passcode</a></th><td class=\"cardtablerowdata\">");
+    /// <summary>
     /// <see cref="Regex"/> to get the passcode of a card
     /// </summary>
-    private readonly Regex passCodeRegex = new(">\\d{8}</.*</td></tr>");
+    private readonly Regex passcodeRegex = new(">\\d+</(a|span)></td></tr>");
     /// <summary>
     /// <see cref="Regex"/> to get the statuses of a card
     /// </summary>
@@ -105,54 +109,70 @@ internal sealed partial class YuGiOhFandom
     /// </summary>
     private async Task GetAllCardsAsync()
     {
-        var currentCard = 0;
-        var cardCount = this.PackData.Sum(pack => pack.Cards.Count);
-        var customPasscode = 900000000; // Original passcodes are 8-digit numbers, this purposely starts with 9-digits, to not interfere with any of the original ones
+        var cards = this.PackData.AsParallel().SelectMany(packData => packData.Cards).Where(card => !card.Skip).DistinctBy(card => card.Endpoint).ToArray();
         
-        foreach (var pack in PackData)
+        var currentCard = 0;
+        var cardCount = cards.Length;
+        var customPasscode = this.GetHighestPasscode();
+
+        await Parallel.ForEachAsync(cards, async (card, token) => // TODO: Use cancellation token
         {
-            await Parallel.ForEachAsync(pack.Cards, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, async (card, token) => // TODO: Use cancellation token
+            var cardData = new CardData(card.Endpoint, card.Rarities);
+
+            var response = await WebClient.ReadWebsiteAsStreamAsync(BaseUri + card.Endpoint, line =>
             {
-                var cardData = new CardData(card.EndPoint, card.Rarities);
+                this.GetImage(line, cardData);
+                this.GetName(line, cardData);
+                this.GetCardType(line, cardData);
+                this.GetAttribute(line, cardData);
+                this.GetMonsterTypes(line, cardData);
+                this.GetMonsterLevel(line, cardData);
+                this.GetPendulumScale(line, cardData);
+                this.GetLinkArrows(line, cardData);
+                this.GetMonsterStats(line, cardData);
+                this.GetPropertyType(line, cardData);
+                this.GetPassCode(line, cardData);
+                this.GetStatuses(line, cardData);
+                this.GetDescriptions(line, cardData);
 
-                var response = await WebClient.ReadWebsiteAsStreamAsync(BaseUri + card.EndPoint, line =>
-                {
-                    this.GetImage(line, cardData);
-                    this.GetName(line, cardData);
-                    this.GetCardType(line, cardData);
-                    this.GetAttribute(line, cardData);
-                    this.GetMonsterTypes(line, cardData);
-                    this.GetMonsterLevel(line, cardData);
-                    this.GetPendulumScale(line, cardData);
-                    this.GetLinkArrows(line, cardData);
-                    this.GetMonsterStats(line, cardData);
-                    this.GetPropertyType(line, cardData);
-                    this.GetPassCode(line, cardData);
-                    this.GetStatuses(line, cardData);
-                    this.GetDescriptions(line, cardData);
-
-                }, line =>
-                {
-                    return cardData.StopSearch = cardData.DuplicatePasscode || cardData.AllDescriptionsFound || this.cardStopConditionRegex.IsMatch(line);
-                });
-                
-                cardData.Passcode ??= Interlocked.Increment(ref customPasscode);
-                card.Passcode = cardData.Passcode.Value;
-                
-                if (CheckForErrors(response, cardData))
-                {
-                    goto SKIP_CARD;
-                }
-
-                this.CardData.Add(cardData);
-                
-                SKIP_CARD:;
-                
-                Output.Print("Downloading card data:", ++currentCard, cardCount, card.EndPoint, MainWindow.TestOutputHelper);
+            }, line =>
+            {
+                return cardData.StopSearch = cardData.AllDescriptionsFound || this.cardStopConditionRegex.IsMatch(line);
             });
+
+            cardData.Passcode ??= this.DeserializedCards.FirstOrDefault(deserializedCard => deserializedCard.Endpoint == cardData.Endpoint)?.Passcode ?? Interlocked.Increment(ref customPasscode);
+            
+            if (CheckForErrors(response, cardData))
+            {
+                goto SKIP_CARD;
+            }
+
+            this.CardData.Add(cardData);
+                
+            SKIP_CARD:;
+                
+            Output.Print("Getting card data:", ++currentCard, cardCount, card.Endpoint, MainWindow.TestOutputHelper);
+        });
+        
+        Output.PrintSkip(cardCount, this.CardData.Count, Log.SkippedCards, MainWindow.TestOutputHelper);
+    }
+
+    /// <summary>
+    /// Gets the highest passcode number from all serialized cards
+    /// </summary>
+    /// <returns>The highest passcode number</returns>
+    private int GetHighestPasscode()
+    {
+        const int customPasscode = 900000000; // Original passcodes are 8-digit numbers, this purposely starts with 9-digits, to not interfere with any of the original ones
+
+        var passcode = this.DeserializedCards.MaxBy(card => card.Passcode)?.Passcode ?? 0;
+
+        if (passcode < customPasscode)
+        {
+            return customPasscode;
         }
 
-        Output.PrintSkip(cardCount, this.CardData.Count, Log.SkippedCards, MainWindow.TestOutputHelper);
+        return passcode + 1;
     }
     
     /// <summary>
@@ -162,7 +182,7 @@ internal sealed partial class YuGiOhFandom
     /// <param name="cardData">Contains all data of a card</param>
     private void GetImage(string line, CardData cardData)
     {
-        if (cardData.CardImageEndpoint != null) return;
+        if (cardData.ImageEndpoint != null) return;
         
         var cardImageMatch = this.cardImageRegex.Match(line);
 
@@ -171,7 +191,7 @@ internal sealed partial class YuGiOhFandom
             var startIndex = cardImageMatch.Value.IndexOf("https", StringComparison.Ordinal);
             var cardImageUri = cardImageMatch.Value[startIndex..];
 
-            cardData.CardImageEndpoint = cardImageUri.Replace(ImageBaseUri, string.Empty);
+            cardData.ImageEndpoint = cardImageUri.Replace(ImageBaseUri, string.Empty);
         }
     }
     
@@ -246,7 +266,7 @@ internal sealed partial class YuGiOhFandom
             }
             else
             {
-                Log.Error(Error.TypeError, cardData.CardEndpoint, cardTypeMatch.Value);
+                Log.Error(Error.TypeError, cardData.Endpoint, cardTypeMatch.Value);
             }
         }
     }
@@ -284,7 +304,7 @@ internal sealed partial class YuGiOhFandom
                     }
                 }
             
-                Log.Error(Error.AttributeError, cardData.CardEndpoint, line);  
+                Log.Error(Error.AttributeError, cardData.Endpoint, line);  
             }
         }
     }
@@ -326,7 +346,7 @@ internal sealed partial class YuGiOhFandom
                         }
                     }
 
-                    Log.Error(Error.MonsterTypeError, cardData.CardEndpoint, typeMatch.Value);
+                    Log.Error(Error.MonsterTypeError, cardData.Endpoint, typeMatch.Value);
                     
                     SKIP_ERROR:;
                 }
@@ -357,7 +377,7 @@ internal sealed partial class YuGiOhFandom
             }
             else
             {
-                Log.Error(Error.MonsterLevelError, cardData.CardEndpoint, monsterLevelMatch.Value);
+                Log.Error(Error.MonsterLevelError, cardData.Endpoint, monsterLevelMatch.Value);
             }
         }
     }
@@ -385,7 +405,7 @@ internal sealed partial class YuGiOhFandom
             }
             else
             {
-                Log.Error(Error.PendulumScaleError, cardData.CardEndpoint, pendulumScaleMatch.Value);
+                Log.Error(Error.PendulumScaleError, cardData.Endpoint, pendulumScaleMatch.Value);
             }
         }
     }
@@ -419,7 +439,7 @@ internal sealed partial class YuGiOhFandom
                     }
                 }
 
-                Log.Error(Error.LinkArrowError, cardData.CardEndpoint, linkArrowMatch.Value);
+                Log.Error(Error.LinkArrowError, cardData.Endpoint, linkArrowMatch.Value);
                     
                 SKIP_ERROR:;
             }
@@ -459,7 +479,7 @@ internal sealed partial class YuGiOhFandom
                 }
                 else
                 {
-                    Log.Error(Error.MonsterStatsError, cardData.CardEndpoint, monsterCardStatsMatch.Value);
+                    Log.Error(Error.MonsterStatsError, cardData.Endpoint, monsterCardStatsMatch.Value);
                 }
                 
                 if (i == 0)
@@ -509,7 +529,7 @@ internal sealed partial class YuGiOhFandom
                 }
             }
             
-            Log.Error(Error.PropertyTypeError, cardData.CardEndpoint, propertyTypeMatch.Value);
+            Log.Error(Error.PropertyTypeError, cardData.Endpoint, propertyTypeMatch.Value);
                     
             SKIP_ERROR:;
         }
@@ -523,31 +543,30 @@ internal sealed partial class YuGiOhFandom
     private void GetPassCode(string line, CardData cardData)
     {
         if (cardData.Passcode != null) return;
-        
-        var passCodeMatch = this.passCodeRegex.Match(line);
 
-        if (passCodeMatch.Success)
+        if (this.passcodeReached.IsMatch(line))
         {
-            var startIndex = passCodeMatch.Value.IndexOf('>') + 1;
-            var length = passCodeMatch.Value.IndexOf('<') - startIndex;
-            var passCodeString = passCodeMatch.Value.Substring(startIndex, length).Replace(" ", string.Empty);
+            cardData.PasscodeReached = true;
+        }
 
-            if (int.TryParse(passCodeString, out var number))
+        if (cardData.PasscodeReached)
+        {
+            var passCodeMatch = this.passcodeRegex.Match(line);
+
+            if (passCodeMatch.Success)
             {
-                cardData.Passcode = number;
+                var startIndex = passCodeMatch.Value.IndexOf('>') + 1;
+                var length = passCodeMatch.Value.IndexOf('<') - startIndex;
+                var passCodeString = passCodeMatch.Value.Substring(startIndex, length).Replace(" ", string.Empty);
 
-                if (this.PassCodes.Contains(cardData.Passcode.Value))
+                if (int.TryParse(passCodeString, out var number))
                 {
-                    cardData.DuplicatePasscode = true;
+                    cardData.Passcode = number;
                 }
                 else
                 {
-                    this.PassCodes.Add(cardData.Passcode.Value);
-                } 
-            }
-            else
-            {
-                Log.Error(Error.PasscodeError, cardData.CardEndpoint, passCodeMatch.Value);
+                    Log.Error(Error.PasscodeError, cardData.Endpoint, passCodeMatch.Value);
+                }
             }
         }
     }
@@ -584,7 +603,7 @@ internal sealed partial class YuGiOhFandom
                     }
                 }
             
-                Log.Error(Error.StatusError, cardData.CardEndpoint, cardStatusMatch.Value);
+                Log.Error(Error.StatusError, cardData.Endpoint, cardStatusMatch.Value);
                     
                 SKIP_ERROR:;
             }
@@ -654,34 +673,28 @@ internal sealed partial class YuGiOhFandom
     {
         if (response == HttpStatusCode.BadRequest)
         {
-            Log.SkipCard(Skip.BadRequest, cardData.CardEndpoint);
+            Log.SkipCard(Skip.BadRequest, cardData.Endpoint); // TODO: Print/Log skipped cards
             return true;
         }
         
-        if (cardData.DuplicatePasscode)
-        {
-            Log.SkipCard(Skip.Duplicate, cardData.CardEndpoint);
-            return true;
-        }
-
         if (!cardData.CardNames.Any())
         {
-            Log.Error(Error.NameError, cardData.CardEndpoint, cardData.CardNames.Count.ToString());
+            Log.Error(Error.NameError, cardData.Endpoint, cardData.CardNames.Count.ToString());
         }
         
-        if (cardData.CardImageEndpoint.IsNullEmptyOrWhitespace())
+        if (cardData.ImageEndpoint.IsNullEmptyOrWhitespace())
         {
-            Log.Error(Error.ImageError, cardData.CardEndpoint, cardData.CardImageEndpoint ?? "null");
+            Log.Error(Error.ImageError, cardData.Endpoint, cardData.ImageEndpoint ?? "null");
         }
         
         if (!cardData.Descriptions.Any())
         {
-            Log.Error(Error.DescriptionError, cardData.CardEndpoint, cardData.Descriptions.Count.ToString());
+            Log.Error(Error.DescriptionError, cardData.Endpoint, cardData.Descriptions.Count.ToString());
         }
         
         if (!cardData.StopSearch)
         {
-            Log.Error(Error.StopConditionError, cardData.CardEndpoint, cardData.StopSearch.ToString());
+            Log.Error(Error.StopConditionError, cardData.Endpoint, cardData.StopSearch.ToString());
         }
 
         return false;
