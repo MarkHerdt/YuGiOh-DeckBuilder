@@ -528,13 +528,13 @@ public partial class MainWindow
             switch (sorting)
             {
                 case YuGiOh.Enums.Sorting.Level:
-                    return cardImages.OrderBy(card => card.CardData.GetLevel()).ToList();
+                    return cardImages.OrderBy(card => card.CardData is Monster).ThenBy(card => card.CardData is Spell).ThenBy(card => card.CardData is Trap).ThenBy(card => card.CardData.GetLevel()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Attack:
-                    return cardImages.OrderBy(card => card.CardData.GetAttack()).ToList();
+                    return cardImages.OrderBy(card => card.CardData is Monster).ThenBy(card => card.CardData is Spell).ThenBy(card => card.CardData is Trap).ThenBy(card => card.CardData.GetAttack()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Defense:
-                    return cardImages.OrderBy(card => card.CardData.GetDefense()).ToList();
+                    return cardImages.OrderBy(card => card.CardData is Monster).ThenBy(card => card.CardData is Spell).ThenBy(card => card.CardData is Trap).ThenBy(card => card.CardData.GetDefense()).ToList();
             }
         }
         else
@@ -542,13 +542,13 @@ public partial class MainWindow
             switch (sorting)
             {
                 case YuGiOh.Enums.Sorting.Level:
-                    return cardImages.OrderByDescending(card => card.CardData.GetLevel()).ToList();
+                    return cardImages.OrderByDescending(card => card.CardData is Monster).ThenByDescending(card => card.CardData is Spell).ThenByDescending(card => card.CardData is Trap).ThenByDescending(card => card.CardData.GetLevel()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Attack:
-                    return cardImages.OrderByDescending(card => card.CardData.GetAttack()).ToList();
+                    return cardImages.OrderByDescending(card => card.CardData is Monster).ThenByDescending(card => card.CardData is Spell).ThenByDescending(card => card.CardData is Trap).ThenByDescending(card => card.CardData.GetAttack()).ToList();
                 
                 case YuGiOh.Enums.Sorting.Defense:
-                    return cardImages.OrderByDescending(card => card.CardData.GetDefense()).ToList();
+                    return cardImages.OrderByDescending(card => card.CardData is Monster).ThenByDescending(card => card.CardData is Spell).ThenByDescending(card => card.CardData is Trap).ThenByDescending(card => card.CardData.GetDefense()).ToList();
             }
         }
 
