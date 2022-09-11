@@ -22,7 +22,19 @@ internal static class WebClient
     /// <summary>
     /// <see cref="HttpClient"/>
     /// </summary>
-    private static readonly HttpClient client = new();
+    private static readonly HttpClient client;
+    #endregion
+
+    #region Constrcutor
+    static WebClient()
+    {
+        var clientHandler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+        };
+
+        client = new HttpClient(clientHandler);
+    }
     #endregion
     
     #region Methods

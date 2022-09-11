@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using YuGiOh_DeckBuilder.YuGiOh;
@@ -85,9 +84,12 @@ public partial class FilterSettingsWindow : Window
     private void Button_Clear_Click(object sender, RoutedEventArgs routedEventArgs)
     {
         this.filterSettings.Packs.ForEach(pack => pack.IsChecked = false);
+        
         this.filterSettings.DateStart = default;
         this.filterSettings.DateEnd = default;
+        
         ClearAll(this.filterSettings.CardTypes);
+        ClearAll(this.filterSettings.NormalOrEffectMonster);
         ClearAll(this.filterSettings.MonsterCardTypes);
         ClearAll(this.filterSettings.PropertyTypes);
         ClearAll(this.filterSettings.Levels);
@@ -101,6 +103,7 @@ public partial class FilterSettingsWindow : Window
         
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Packs));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.CardTypes));
+        this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.NormalOrEffectMonster));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.MonsterCardTypes));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.PropertyTypes));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Levels));
@@ -127,36 +130,13 @@ public partial class FilterSettingsWindow : Window
     }
     
     /// <summary>
-    /// Sets all <see cref="IDictionary{TKey,TValue}.Values"/> of the given <see cref="IDictionary{TKey,TValue}"/>
-    /// </summary>
-    /// <param name="dictionary">The <see cref="IDictionary{TKey,TValue}"/> to adjust the <see cref="bool"/> value in</param>
-    /// <typeparam name="T">Can be of any <see cref="Type"/></typeparam>
-    private static void SetAll<T>(IDictionary<T, bool> dictionary)
-    {
-        if (dictionary.Values.Any(value => value))
-        {
-            foreach (var (key, _) in dictionary)
-            {
-                dictionary[key] = false;
-            }
-        }
-        else
-        {
-            foreach (var (key, _) in dictionary)
-            {
-                dictionary[key] = true;
-            }
-        }
-    }
-    
-    /// <summary>
     /// Selects/Deselects all <see cref="FilterSettings.CardTypes"/>
     /// </summary>
     /// <param name="sender"><see cref="object"/> from which this method is called</param>
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_CardType_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.CardTypes);
+        ClearAll(this.filterSettings.CardTypes);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.CardTypes));
     }
     
@@ -167,7 +147,9 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_MonsterType_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.MonsterCardTypes);
+        ClearAll(this.filterSettings.NormalOrEffectMonster);
+        ClearAll(this.filterSettings.MonsterCardTypes);
+        this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.NormalOrEffectMonster));
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.MonsterCardTypes));
     }
     
@@ -178,7 +160,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_SpellTrap_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.PropertyTypes);
+        ClearAll(this.filterSettings.PropertyTypes);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.PropertyTypes));
     }
     
@@ -189,7 +171,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_LevelRank_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.Levels);
+        ClearAll(this.filterSettings.Levels);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Levels));
     }
     
@@ -200,7 +182,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_Attribute_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.Attributes);
+        ClearAll(this.filterSettings.Attributes);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Attributes));
     }
     
@@ -211,7 +193,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_Ability_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.Abilities);
+        ClearAll(this.filterSettings.Abilities);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Abilities));
     }
     
@@ -222,7 +204,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_Type_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.Types);
+        ClearAll(this.filterSettings.Types);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Types));
     }
     
@@ -233,7 +215,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_PendulumScale_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.PendulumScales);
+        ClearAll(this.filterSettings.PendulumScales);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.PendulumScales));
     }
     
@@ -244,7 +226,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_LinkArrow_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.LinkArrows);
+        ClearAll(this.filterSettings.LinkArrows);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.LinkArrows));
     }
     
@@ -255,7 +237,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_Rarity_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.Rarities);
+        ClearAll(this.filterSettings.Rarities);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Rarities));
     }
     
@@ -266,7 +248,7 @@ public partial class FilterSettingsWindow : Window
     /// <param name="routedEventArgs"><see cref="RoutedEventArgs"/></param>
     private void Button_Status_Click(object sender, RoutedEventArgs routedEventArgs)
     {
-        SetAll(this.filterSettings.Statuses);
+        ClearAll(this.filterSettings.Statuses);
         this.filterSettings.OnPropertyChanged(nameof(this.filterSettings.Statuses));
     }
 

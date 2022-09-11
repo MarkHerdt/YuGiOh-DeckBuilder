@@ -225,6 +225,7 @@ public partial class MainWindow
         
         var search = this.SearchPacks();
         search = this.SearchCardTypes(search);
+        search = this.SearchNormalOrEffectMonster(search);
         search = this.SearchMonsterTypes(search);
         search = this.SearchPropertyTypes(search);
         search = this.SearchLevels(search);
@@ -282,10 +283,27 @@ public partial class MainWindow
     private List<CardImage> SearchCardTypes(List<CardImage> cardImages)
     {
         var cardTypes = filterSettings.CardTypes.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
-        
+
         if (cardTypes.Any())
         {
             return cardImages.AsParallel().Where(cardImage => cardTypes.Contains(cardImage.CardData.CardType)).ToList();
+        }
+
+        return cardImages;
+    }
+
+    /// <summary>
+    /// Searches any <see cref="CardImage"/> whose <see cref="Monster.MonsterTypes"/> match the selected <see cref="FilterSettings.NormalOrEffectMonster"/> in <see cref="filterSettings"/>
+    /// </summary>
+    /// <param name="cardImages">The cards to search in</param>
+    /// <returns>Every card in the given cardImages, whose <see cref="Monster.MonsterTypes"/> match the selected <see cref="FilterSettings.NormalOrEffectMonster"/> in <see cref="filterSettings"/></returns>
+    private List<CardImage> SearchNormalOrEffectMonster(List<CardImage> cardImages)
+    {
+        var normalOrEffectMonster = filterSettings.NormalOrEffectMonster.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToList();
+
+        if (normalOrEffectMonster.Any())
+        {
+            return cardImages.AsParallel().Where(cardImage => normalOrEffectMonster.Contains(cardImage.CardData.GetNormalOrEffectMonster())).ToList();
         }
 
         return cardImages;
@@ -302,7 +320,7 @@ public partial class MainWindow
 
         if (monsterTypes.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => monsterTypes.Any(monsterType => monsterType == cardImage.CardData.GetMonsterType())).ToList();
+            return cardImages.AsParallel().Where(cardImage => monsterTypes.Contains(cardImage.CardData.GetMonsterType())).ToList();
         }
 
         return cardImages;
@@ -372,7 +390,7 @@ public partial class MainWindow
 
         if (abilities.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => abilities.Any(ability => ability == cardImage.CardData.GetAbilityType())).ToList();
+            return cardImages.AsParallel().Where(cardImage => abilities.Contains(cardImage.CardData.GetAbilityType())).ToList();
         }
 
         return cardImages;
@@ -389,7 +407,7 @@ public partial class MainWindow
 
         if (types.Any())
         {
-            return cardImages.AsParallel().Where(cardImage => types.Any(type => type == cardImage.CardData.GetType())).ToList();
+            return cardImages.AsParallel().Where(cardImage => types.Contains(cardImage.CardData.GetType())).ToList();
         }
 
         return cardImages;

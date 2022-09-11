@@ -42,14 +42,23 @@ internal sealed record Monster
 {
     #region Statics
     /// <summary>
+    /// <see cref="MonsterType.Normal"/>/<see cref="MonsterType.Effect"/>
+    /// </summary>
+    internal static ReadOnlyCollection<MonsterType> NormalOrEffectMonster { get; } = new
+    (
+        new List<MonsterType>
+        {
+            MonsterType.Normal,
+            MonsterType.Effect
+        }
+    );
+    /// <summary>
     /// All possible card types of a <see cref="Monster"/>
     /// </summary>
     internal static ReadOnlyCollection<MonsterType> MonsterCardTypes { get; } = new
     (
         new List<MonsterType>
         {
-            MonsterType.Normal,
-            MonsterType.Effect,
             MonsterType.Fusion,
             MonsterType.Ritual,
             MonsterType.Synchro,
@@ -111,6 +120,10 @@ internal sealed record Monster
     #endregion
     
     #region Members
+    /// <summary>
+    /// Indicate it this <see cref="ACard"/> is a <see cref="MonsterType.Normal"/> or an <see cref="MonsterType.Effect"/> <see cref="Monster"/>
+    /// </summary>
+    private MonsterType normalOrEffect;
     /// <summary>
     /// The card type of this <see cref="Monster"/>
     /// </summary>
@@ -177,6 +190,7 @@ internal sealed record Monster
     #region Methods
     internal override void Init()
     {
+        this.normalOrEffect = this.MonsterTypes.FirstOrDefault(monsterType => NormalOrEffectMonster.Contains(monsterType), MonsterType.Normal);
         this.monsterCardType = this.MonsterTypes.FirstOrDefault(monsterType => MonsterCardTypes.Contains(monsterType), MonsterType.MISSING);
         this.ability = this.MonsterTypes.FirstOrDefault(monsterType => Abilities.Contains(monsterType), MonsterType.MISSING);
         this.type = this.MonsterTypes.FirstOrDefault(monsterType => Types.Contains(monsterType), MonsterType.MISSING);
@@ -184,7 +198,9 @@ internal sealed record Monster
 
         this.MonsterTypes = Enumerable.Empty<MonsterType>();
     }
-    
+
+    internal override MonsterType GetNormalOrEffectMonster() => this.normalOrEffect;
+
     internal override MonsterType GetMonsterType() => this.monsterCardType;
     
     internal override MonsterType GetAbilityType() => this.ability;

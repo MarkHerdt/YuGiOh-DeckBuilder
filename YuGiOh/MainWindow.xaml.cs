@@ -86,7 +86,7 @@ namespace YuGiOh_DeckBuilder
 
             await yuGiOhFandom.DownloadData();
             
-            //await this.IndexCards();
+            await this.IndexCards();
             
             Console.WriteLine("\nFinished Downloading\n");
             
@@ -112,7 +112,7 @@ namespace YuGiOh_DeckBuilder
 
             await yuGiOhFandom.UpdateData();
             
-            //await this.IndexCards();
+            await this.IndexCards();
             
             Console.WriteLine("\nFinished Downloading\n");
             

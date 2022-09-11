@@ -21,18 +21,28 @@ internal record FilterSettings : INotifyPropertyChanged
     /// <summary>
     /// Contains all <see cref="MainWindow.Packs"/>
     /// </summary>
-    public List<PackToggleButton> Packs { get; set; } = new();
+    public List<PackToggleButton> Packs { get; } = new();
+    /// <summary>
+    /// <see cref="DateTime"/> for <see cref="FilterSettingsWindow.ComboBox_DateStart"/>
+    /// </summary>
     public DateTime DateStart { get; set; }
+    /// <summary>
+    /// <see cref="DateTime"/> for <see cref="FilterSettingsWindow.ComboBox_DateEnd"/>
+    /// </summary>
     public DateTime DateEnd { get; set; }
-
+    
     /// <summary>
     /// Determines what <see cref="CardType"/> to search for
     /// </summary>
     public Dictionary<CardType, bool> CardTypes { get; } = Enum.GetValues<CardType>().ToDictionary(key => key, _ => false);
     /// <summary>
+    /// Determines if the search should include/exclude <see cref="MonsterType.Normal"/>/<see cref="MonsterType.Effect"/> <see cref="Monster"/>
+    /// </summary>
+    public Dictionary<MonsterType, bool> NormalOrEffectMonster { get; } = Monster.NormalOrEffectMonster.ToDictionary(key => key, _ => false);
+    /// <summary>
     /// Determines what <see cref="MonsterType"/> to search for
     /// </summary>
-    public Dictionary<MonsterType, bool> MonsterCardTypes { get; } = Monster.MonsterCardTypes.ToDictionary(key => key, value => false );
+    public Dictionary<MonsterType, bool> MonsterCardTypes { get; } = Monster.MonsterCardTypes.ToDictionary(key => key, _ => false);
     /// <summary>
     /// Determines what <see cref="PropertyType"/> to search for
     /// </summary>

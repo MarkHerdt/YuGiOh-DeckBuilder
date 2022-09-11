@@ -94,6 +94,12 @@ internal abstract record ACard(Localized Localized, string Endpoint, string Imag
 
         return description;
     }
+
+    /// <summary>
+    /// Gets the <see cref="Monster."/>
+    /// </summary>
+    /// <returns></returns>
+    internal virtual MonsterType GetNormalOrEffectMonster() => MonsterType.MISSING;
     
     /// <summary>
     /// Gets the <see cref="Monster.monsterCardType"/> of a <see cref="Monster"/> card
