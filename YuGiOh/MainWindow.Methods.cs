@@ -573,17 +573,13 @@ public partial class MainWindow
     /// <param name="cardImage">The <see cref="CardImage"/> to add to <see cref="DeckListView"/></param>
     internal void AddCardToDeck(CardImage cardImage)
     {
-        // TODO: Sort cards by currently set sorting
-        
         if (cardImage.CardData.IsExtraDeckCard())
         {
-            AddOrInsert(this.ExtraDeckListView, cardImage);
-            this.OnPropertyChanged(nameof(this.ExtraDeckListView));
+            this.ExtraDeckListView = this.AddOrInsert(this.ExtraDeckListView, cardImage);
         }
         else
         {
-            AddOrInsert(this.DeckListView, cardImage);
-            this.OnPropertyChanged(nameof(this.DeckListView));
+            this.DeckListView = this.AddOrInsert(this.DeckListView, cardImage);
         }
     }
 
@@ -592,18 +588,12 @@ public partial class MainWindow
     /// </summary>
     /// <param name="listView">The <see cref="List{T}"/> to add the <see cref="CardImage"/> to</param>
     /// <param name="cardImage">The <see cref="CardImage"/> to add to the <see cref="List{T}"/></param>
-    private static void AddOrInsert(List<CardImage> listView, CardImage cardImage)
+    /// <returns>The given listView, sorted by <see cref="currentDeckSortingOrder"/></returns>
+    private List<CardImage> AddOrInsert(List<CardImage> listView, CardImage cardImage)
     {
-        var deckIndex = listView.FindIndex(deckCardImage => deckCardImage.Index == cardImage.Index);
-        
-        if (deckIndex != -1)
-        {
-            listView.Insert(deckIndex, cardImage);
-        }
-        else
-        {
-            listView.Add(cardImage);
-        }
+        listView.Add(cardImage);
+
+        return SortCards(listView, (Sorting)this.ComboBox_Sort_DeckListView.SelectedValue, this.currentDeckSortingOrder);
     }
     
     /// <summary>
